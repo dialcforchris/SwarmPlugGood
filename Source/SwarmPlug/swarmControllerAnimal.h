@@ -36,7 +36,10 @@ public:
 		FVector RunFrom(ACharacter* AC, AswarmActor* act);
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector MoveTo(FVector target, AswarmActor* act);
-
+	UFUNCTION(BlueprintCallable, Category = AnimalBehaviour)
+	FVector LocalPoint(AActor* act);
+	FVector localpoint;
+	FBox box;
 	void StateManager(AswarmActor* act);
 	bool RunAway(AswarmActor* act, ACharacter* charact);
 		void enumSwitch();

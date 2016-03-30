@@ -180,11 +180,11 @@ FVector AswarmController::alignment(AswarmActor* b)
 	{
 		if (b != swarmArray[i])
 		{
-			ali = ali + swarmArray[i]->velocity;
+			ali = ali + swarmArray[i]->GetVelocity();
 		}
 		ali = ali / swarmArray.Num() - 1;
 	}
-	return (ali - b->velocity);
+	return (ali - b->GetVelocity());
 	
 }
 
