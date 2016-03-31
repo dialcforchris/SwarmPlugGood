@@ -59,14 +59,14 @@ FVector AswarmControllerAnimal::MoveTo(FVector target, AswarmActor* act)
 	
 		FVector move = FVector().ZeroVector;
 
-		if (FVector().Dist(act->GetActorLocation(), target)>200)
+		if (FVector().Dist(act->GetActorLocation(), target)>100)
 		{
-			move = FMath::LerpStable(act->GetActorLocation(), target, 0.1);
+			move = (target + act->GetActorLocation())/100;
 
 		}
 		else
 		{
-			act->behave = Behaviours::IDLE;
+			//act->behave = Behaviours::IDLE;
 		}
 		
 	
@@ -76,13 +76,18 @@ FVector AswarmControllerAnimal::MoveTo(FVector target, AswarmActor* act)
 
 Behaviours AswarmControllerAnimal::StateManager(AswarmActor* act)
 {
+	int32 random = FMath::RandRange(0, 100);
 	if (FVector::Dist(act->GetActorLocation(), player->GetActorLocation())<playerDistance)
 	{
 		return Behaviours::RUN;
 	}
-	else if (FMath::RandRange(0, 100) > 70)
+	else if ( random> 70)
 	{
 		return Behaviours::IDLE;
+	}
+	//else if (random < 30 && act->behave!=Behaviours::RUN)
+	{
+		//return Behaviours::FOLLOW;
 	}
 	
 	return Behaviours::MOVETOTARGET;
@@ -100,9 +105,11 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 	FVector runV = FVector().ZeroVector;
 	FVector idleV = FVector().ZeroVector;
 	FVector totalV = FVector().ZeroVector;
+	
 	float dist = 0;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
+	
 		swarmArray[i]->behave = StateManager(swarmArray[i]);
 
 		for (int j = 0; j < swarmArray.Num(); j++)
@@ -138,7 +145,11 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 					alignmentV = alignment(swarmArray[i],dist,swarmArray[j]);
 
 				}
-
+				else if (swarmArray[i]->behave == Behaviours::FOLLOW)
+				{
+					moveToV = MoveTo(player->GetActorLocation(), swarmArray[i]);
+					separationV = separation(swarmArray[i], dist, swarmArray[j]);
+				}
 
 
 				else if (swarmArray[i]->behave == Behaviours::MOVETOTARGET)
