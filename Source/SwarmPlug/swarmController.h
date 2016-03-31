@@ -89,13 +89,13 @@ public:
 		void CreateSwarm();
 	//Swarm Cohesion
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
-		FVector cohesion(AswarmActor* b);
+		FVector cohesion(AswarmActor* b,float dist, AswarmActor* a);
 	//Swarm Separation
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
-		FVector separation(AswarmActor* b);
+		FVector separation(AswarmActor* b,float dist, AswarmActor* a);
 	//Swarm Alignment
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
-		FVector alignment(AswarmActor* b);
+		FVector alignment(AswarmActor* b,float dist,AswarmActor* a);
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector Boundaries(AswarmActor* b);
 	//UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
@@ -103,6 +103,8 @@ public:
 	//Apply Basic Swarm Intelligence
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		void ApplyBasicSwarming(float tick);
+	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		float GetDistance(AActor* a, AActor* b);
 	//nearestN stuff
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = SwarmFunctions)
 	int32 nearestN = 5;

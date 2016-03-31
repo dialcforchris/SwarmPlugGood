@@ -100,58 +100,67 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 	FVector runV = FVector().ZeroVector;
 	FVector idleV = FVector().ZeroVector;
 	FVector totalV = FVector().ZeroVector;
+	float dist = 0;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
 		swarmArray[i]->behave = StateManager(swarmArray[i]);
-		if (swarmArray[i]->behave == Behaviours::RUN)
-		{
-			runV = (RunFrom(player, swarmArray[i]));
-			separationV = separation(swarmArray[i]);
-			boundV = Boundaries(swarmArray[i]);
-		}
 
-		else if (swarmArray[i]->behave == Behaviours::IDLE)
+		for (int j = 0; j < swarmArray.Num(); j++)
 		{
-			float boxDist;
-			if (box == NULL)
+			if (swarmArray[i] != swarmArray[j])
 			{
-				localpoint = LocalPoint(swarmArray[i]);
-				boxDist = FVector().Dist(swarmArray[i]->GetActorLocation(), box.GetCenter());
+				dist = GetDistance(swarmArray[i], swarmArray[j]);
 
-			}
+				if (swarmArray[i]->behave == Behaviours::RUN)
+				{
+					runV = (RunFrom(player, swarmArray[i]));
+					separationV = separation(swarmArray[i], dist, swarmArray[j]);
+				}
 
-			if (boxDist <= 20)
-			{
-				idleV = swarmArray[i]->GetActorLocation().GetClampedToSize(0, 1);
+				else if (swarmArray[i]->behave == Behaviours::IDLE)
+				{
+					float boxDist;
+					if (box == NULL)
+					{
+						localpoint = LocalPoint(swarmArray[i]);
+						boxDist = FVector().Dist(swarmArray[i]->GetActorLocation(), box.GetCenter());
+
+					}
+
+					if (boxDist <= 20)
+					{
+						idleV = swarmArray[i]->GetActorLocation().GetClampedToSize(0, 1);
+					}
+					else
+					{
+						idleV = localpoint - swarmArray[i]->GetActorLocation() / 70;
+					}
+					alignmentV = alignment(swarmArray[i],dist,swarmArray[j]);
+
+				}
+
+
+
+				else if (swarmArray[i]->behave == Behaviours::MOVETOTARGET)
+				{
+					if (BoundariesOn)
+						//	boundV = Boundaries(swarmArray[i]);
+						if (SeparationOn)
+							separationV = separation(swarmArray[i],dist,swarmArray[j]);
+					if (CohesionOn)
+						cohesionV = cohesion(swarmArray[i],dist,swarmArray[j]) / 100;
+					alignmentV = alignment(swarmArray[i],dist,swarmArray[j]);
+
+
+				}
 			}
-			else
-			{
-				idleV = localpoint - swarmArray[i]->GetActorLocation()/ 70;
-			}
-			alignmentV = alignment(swarmArray[i]);
-			
 		}
-			
-			
-		
-		else if (swarmArray[i]->behave == Behaviours::MOVETOTARGET)
-		{
-			if (BoundariesOn)
-				boundV = Boundaries(swarmArray[i]);
-			if (SeparationOn)
-				separationV = separation(swarmArray[i]);
-			if (CohesionOn)
-				cohesionV = cohesion(swarmArray[i]) / 100;
-			alignmentV = alignment(swarmArray[i]);
-			
-			
-		}
-		
 		//scale the returned values
 		separationV = (separationV *scaleSep);
 		cohesionV = (cohesionV *scaleCoh).GetClampedToSize(-20, 20);
 		alignmentV = (alignmentV * scaleAli).GetClampedToSize(-200, 200);
-		
+		boundV = Boundaries(swarmArray[i]);
+
 		//float appliedSpeed = speed * tick;
 		totalV = (separationV + cohesionV + alignmentV + boundV + moveToV + runV + idleV);
 		if (!canFly)
@@ -159,6 +168,13 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 			totalV.Z = 0;
 		}
 		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
+		if (swarmArray[i]->behave != Behaviours::RUN)
+		{
+			if (swarmArray[i]->velocity.Size() > 200)
+			{
+				swarmArray[i]->velocity -= swarmArray[i]->velocity / 100;
+			}
+		}
 	}
 
 }
