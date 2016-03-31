@@ -37,6 +37,9 @@ enum Behaviours
 	IDLE,
 	MOVETOTARGET,
 	WAIT,
-	RUN
+	RUN,
+	FLOCK,
+	FOLLOW
+
 };
 

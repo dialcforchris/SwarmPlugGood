@@ -72,7 +72,6 @@ void AswarmController::ApplyBasicSwarming(float tick)
 
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
-		N = 0;
 		FVector alignmentV = FVector().ZeroVector;
 		FVector cohesionV = FVector().ZeroVector;
 		FVector separationV = FVector().ZeroVector;
@@ -93,13 +92,17 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		separationV = separationV *scaleSep;
 		cohesionV = cohesionV *scaleCoh;
 		alignmentV = alignmentV * scaleAli;
-		float appliedSpeed = speed * tick;
+		//float appliedSpeed = speed * tick;
 		totalV = separationV + cohesionV + alignmentV + boundV;
 		if (!canFly)
 		{
 			totalV.Z = 0;
 		}
-		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*appliedSpeed;
+		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
+		if (swarmArray[i]->velocity.SizeSquared() > 1)
+		{
+			swarmArray[i]->velocity -= swarmArray[i]->velocity /100;
+		}
 		
 
 	}
@@ -132,33 +135,6 @@ FVector AswarmController::Boundaries(AswarmActor* b)
 		Bound.Z = -boundaryFix;
 	}
 	return Bound;
-
-	/*if (b->GetActorLocation().X < MinX)
-	{
-		Bound.X = boundaryFix;
-	}
-	if (b->GetActorLocation().X > MaxX)
-	{
-		Bound.X = -boundaryFix;
-	}
-	if (b->GetActorLocation().Y < MinY)
-	{
-		Bound.Y = boundaryFix;
-	}
-	if (b->GetActorLocation().Y > MaxY)
-	{
-		Bound.Y = -boundaryFix;
-	}
-	if (b->GetActorLocation().Z < MinZ)
-	{
-		Bound.Z = boundaryFix;
-	}
-	if (b->GetActorLocation().Z > MaxZ)
-	{
-		Bound.Z = -boundaryFix;
-	}
-	Bound = ((b->GetActorLocation() - Bound));
-	return Bound;*/
 }
 FVector AswarmController::alignmentTwo(FVector b)
 {
@@ -175,16 +151,21 @@ FVector AswarmController::alignmentTwo(FVector b)
 
 FVector AswarmController::alignment(AswarmActor* b)
 {
-
+	int count = 0;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
-		if (b != swarmArray[i])
+		if (b != swarmArray[i])// && b->behave == swarmArray[i]->behave)
 		{
-			ali = ali + swarmArray[i]->GetVelocity();
+			if (FVector::Dist(b->GetActorLocation(), swarmArray[i]->GetActorLocation()) < maxDist)
+			{
+				ali = ali + swarmArray[i]->GetVelocity();
+				count++;
+			}
+			
 		}
-		ali = ali / swarmArray.Num() - 1;
+		ali = ali /count;
 	}
-	return (ali - b->GetVelocity());
+	return ((ali - b->GetVelocity())/100).GetClampedToMaxSize(100);
 	
 }
 
@@ -195,12 +176,14 @@ FVector AswarmController::separation(AswarmActor* b)
 	{
 		if (b != swarmArray[i])
 		{
-			if (FVector().Dist(b->GetActorLocation(), swarmArray[i]->GetActorLocation()) < maxDist)
+			//if (b->behave == swarmArray[i]->behave)
 			{
+				if (FVector().Dist(b->GetActorLocation(), swarmArray[i]->GetActorLocation()) < maxDist)
+				{
 
-				sep = sep - (swarmArray[i]->GetActorLocation() - b->GetActorLocation());// minus;
+					sep = sep - (swarmArray[i]->GetActorLocation() - b->GetActorLocation());// minus;
+				}
 			}
-
 		}
 	}
 	return sep;
@@ -208,24 +191,16 @@ FVector AswarmController::separation(AswarmActor* b)
 
 FVector AswarmController::cohesion(AswarmActor* b)
 {
-	int dist = maxDist;
+	
 	coh = FVector().ZeroVector;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
 		if (b != swarmArray[i])
 		{
-			if (FVector().Dist(b->GetActorLocation(), swarmArray[i]->GetActorLocation()) < dist)
-			{
-				coh = coh + swarmArray[i]->GetActorLocation();
-				N++;
-			}
-		}
-		
-		
-		if (i == swarmArray.Num()-1 && N < 3)
-		{
-			i = 0;
-			dist += 100;
+				if (FVector().Dist(b->GetActorLocation(), swarmArray[i]->GetActorLocation()) < maxDist)
+				{
+					coh = coh + swarmArray[i]->GetActorLocation();
+				}
 		}
 	}
 	

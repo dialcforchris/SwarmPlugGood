@@ -104,7 +104,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		void ApplyBasicSwarming(float tick);
 	//nearestN stuff
-	int nearestN = 5;
+	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = SwarmFunctions)
+	int32 nearestN = 5;
 	TArray<AswarmActor*>distArray;
 	TArray<float>eachDist;
 	void GetDist(AswarmActor* b);

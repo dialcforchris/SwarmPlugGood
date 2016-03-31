@@ -40,7 +40,8 @@ public:
 	FVector LocalPoint(AActor* act);
 	FVector localpoint;
 	FBox box;
-	void StateManager(AswarmActor* act);
+	Behaviours StateManager(AswarmActor* act);
+	
 	bool RunAway(AswarmActor* act, ACharacter* charact);
 		void enumSwitch();
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
