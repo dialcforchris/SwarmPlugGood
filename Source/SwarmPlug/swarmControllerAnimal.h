@@ -40,8 +40,9 @@ public:
 	FVector LocalPoint(AActor* act);
 	FVector localpoint;
 	FBox box;
-	Behaviours StateManager(AswarmActor* act);
-	
+	Behaviours StateManager(AswarmActor* act,float tick);
+	float timer = 0;
+	bool swtch;
 	bool RunAway(AswarmActor* act, ACharacter* charact);
 		void enumSwitch();
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
@@ -66,7 +67,7 @@ public:
 	FVector targetLocation;
 	
 		int arraySize;
-	float timer = 0;
+
 	float randomNumber;
 	///player avoidance multiplier
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmVariables)

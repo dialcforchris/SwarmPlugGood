@@ -31,7 +31,7 @@ void AswarmActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetActorLocation(GetActorLocation() + velocity * DeltaTime);
-	//velocity += GetActorLocation();
+	
 	velocity = velocity.GetClampedToSize(0, 360);
 	SetActorRotation(velocity.Rotation());
 	
