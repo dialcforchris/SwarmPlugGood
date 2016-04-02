@@ -48,4 +48,34 @@ void AswarmActor::Tick(float DeltaTime)
 }
 
 
+FVector AswarmActor::LineTracer()
+{
+	FVector line = FVector().ZeroVector;
+	TArray<UStaticMeshComponent*> components;
+	UStaticMeshComponent* SM_Comp = NULL;
+	FRotator rot;
+	ECollisionChannel trace = ECollisionChannel::ECC_Visibility;
+	const FName TraceTag("Trace");
+	GetWorld()->DebugDrawTraceTag = TraceTag;
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
+	params.TraceTag = TraceTag;
 
+	GetComponents<UStaticMeshComponent>(components);
+	for (int32 i = 0; i<components.Num(); i++)
+	{
+		SM_Comp = components[i];
+		UStaticMesh* mesh = SM_Comp->StaticMesh;
+
+	}
+	rot = SM_Comp->GetComponentRotation() - GetActorRotation();
+
+	
+	FHitResult hit;
+	FVector start = GetActorLocation();
+	FVector end = (rot.Vector().ForwardVector + start)*10;
+	//end.X += 10;
+	//end = end + start;
+	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
+	return GetActorLocation() +line / 100;
+}

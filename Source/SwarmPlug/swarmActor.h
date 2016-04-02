@@ -30,7 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMesh* mesh;
 	enum Behaviours behave;
-
+	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		FVector LineTracer();
 
 };
 enum Behaviours

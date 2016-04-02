@@ -76,11 +76,13 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		FVector cohesionV = FVector().ZeroVector;
 		FVector separationV = FVector().ZeroVector;
 		FVector boundV = FVector().ZeroVector;
+		FVector traceV = FVector().ZeroVector;
 		totalV = FVector().ZeroVector;
 		float dist;
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
-			Avoidance(swarmArray[i]);
+			//Avoidance(swarmArray[i]);
+			traceV = Avoidance(swarmArray[i]);// swarmArray[i]->LineTracer();
 			if (swarmArray[i] != swarmArray[j])
 			{
 				dist = GetDistance(swarmArray[i], swarmArray[j]);
@@ -100,7 +102,7 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		separationV = separationV *scaleSep;
 		cohesionV = (cohesionV *scaleCoh).GetClampedToSize(-20, 20);
 		alignmentV = (alignmentV * scaleAli).GetClampedToSize(-200, 200);
-		totalV = separationV + cohesionV + alignmentV + boundV + Avoidance(swarmArray[i]);
+		totalV = separationV + cohesionV + alignmentV + boundV + traceV;//Avoidance(swarmArray[i]);
 		if (!canFly)
 		{
 			totalV.Z = 0;
@@ -135,17 +137,20 @@ FVector AswarmController::Avoidance(AActor* act)
 		
 	}
 	
-	rot = SM_Comp->GetComponentRotation();
+	rot = SM_Comp->GetComponentRotation()*90;
 	
 	
 	FHitResult hit;
 	FVector start = act->GetActorLocation();
-	FVector end = (rot.Vector().ForwardVector * start.ForwardVector);
+	//start += start.RightVector + 100;
+	FVector end = (rot.GetInverse().Vector().ForwardVector + start);
 	end.X += 10;
-	end = end + start;
+	
 	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
-	//avoid = hit.Location;
-	return avoid/100;
+	
+	avoid -= hit.Location;
+
+	return avoid/2;
 }
 float AswarmController::GetDistance(AActor* a, AActor* b)
 {

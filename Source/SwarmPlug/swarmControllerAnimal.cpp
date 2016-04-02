@@ -158,13 +158,14 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 	FVector runV = FVector().ZeroVector;
 	FVector idleV = FVector().ZeroVector;
 	FVector totalV = FVector().ZeroVector;
+	FVector lineV = FVector::ZeroVector;
 	
 	float dist = 0;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
 	
 		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
-		Avoidance(swarmArray[i]);
+		lineV = Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
 			if (swarmArray[i] != swarmArray[j])
@@ -228,12 +229,12 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 		boundV = Boundaries(swarmArray[i]);
 
 		//float appliedSpeed = speed * tick;
-		totalV = (separationV + cohesionV + alignmentV + boundV + moveToV + runV + idleV);
+		totalV = (separationV + cohesionV + alignmentV + boundV + moveToV + runV + idleV+ lineV);
 		if (!canFly)
 		{
 			totalV.Z = 0;
 		}
-		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV + Avoidance(swarmArray[i]))*speed;
+		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV )*speed;
 		if (swarmArray[i]->behave != Behaviours::RUN)
 		{
 			if (swarmArray[i]->velocity.Size() > 200)
