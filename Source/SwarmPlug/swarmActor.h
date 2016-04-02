@@ -20,14 +20,15 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
-	
+
 	//Actor Velocity
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector velocity;
 	//Adjust Rotation
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float skRotAdj;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMesh* mesh;
 	enum Behaviours behave;
 
 

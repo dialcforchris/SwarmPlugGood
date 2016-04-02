@@ -164,7 +164,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 	{
 	
 		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
-
+		Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
 			if (swarmArray[i] != swarmArray[j])
@@ -233,7 +233,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 		{
 			totalV.Z = 0;
 		}
-		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
+		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV + Avoidance(swarmArray[i]))*speed;
 		if (swarmArray[i]->behave != Behaviours::RUN)
 		{
 			if (swarmArray[i]->velocity.Size() > 200)
