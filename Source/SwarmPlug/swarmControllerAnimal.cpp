@@ -165,7 +165,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 	{
 	
 		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
-		lineV = Avoidance(swarmArray[i]);
+		//lineV = Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
 			if (swarmArray[i] != swarmArray[j])

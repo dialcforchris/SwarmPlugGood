@@ -32,7 +32,10 @@ public:
 	enum Behaviours behave;
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector LineTracer();
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UClass* swarmClass;
+	AActor* actor;
+	void SpawnActors(UClass* swarmclass);
 };
 enum Behaviours
 {

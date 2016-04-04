@@ -8,18 +8,8 @@ AswarmActor::AswarmActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	FName compName = "Mesh";
-	AddComponent(compName, false, GetTransform(), mesh);
-
-	velocity = FVector(0, 0, 0);
-	TArray<UStaticMeshComponent*> components;
-	GetComponents<UStaticMeshComponent>(components);
-	for (int32 i = 0; i<components.Num(); i++)
-	{
-		//SM_Comp = components[i];
-		UStaticMeshComponent* SM_Comp = components[i];
-		SM_Comp->StaticMesh = mesh;
-	}
+	SetTickGroup(ETickingGroup::TG_PostPhysics);
+	
 
 	
 	// enum Behaviours behave; 
@@ -38,11 +28,12 @@ void AswarmActor::BeginPlay()
 void AswarmActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	SetActorLocation(GetActorLocation() + velocity * DeltaTime);
-	
+	SetActorLocation(GetActorLocation() + velocity *  DeltaTime);
+	actor->SetActorLocation(GetActorLocation());
+	//SetActorLocation(GetActorLocation() + velocity * DeltaTime);
 	velocity = velocity.GetClampedToSize(0, 360);
 	SetActorRotation(velocity.Rotation());
+	actor->SetActorRotation(GetActorRotation());
 	
 
 }
@@ -78,4 +69,13 @@ FVector AswarmActor::LineTracer()
 	//end = end + start;
 	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
 	return GetActorLocation() +line / 100;
+}
+void AswarmActor::SpawnActors(UClass* cl)
+{
+	UWorld* world = GetWorld();
+	if (world)
+	{
+		actor = world->SpawnActor<AActor>(cl,GetActorLocation(),GetActorRotation());
+		actor->AttachRootComponentToActor(this);
+	}
 }

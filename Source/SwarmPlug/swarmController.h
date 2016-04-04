@@ -64,7 +64,8 @@ public:
 	//The Actor Class used in the swarm
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
 		TSubclassOf<AActor> ActorClass;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
+		UClass* AgentClass;
 	//Swarm Actor
 	AswarmActor* SwAct;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
@@ -109,8 +110,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		float GetDistance(AActor* a, AActor* b);
 
-	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
-		FVector Avoidance(AActor* act);
+	/*UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		FVector Avoidance(AActor* act);*/
 	//nearestN stuff
 	UPROPERTY(BlueprintReadWrite,EditAnywhere, Category = SwarmFunctions)
 	int32 nearestN = 5;

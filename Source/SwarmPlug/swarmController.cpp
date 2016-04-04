@@ -55,10 +55,12 @@ void AswarmController::CreateSwarm()
 			}
 
 			FActorSpawnParameters SpawnParams;
-
+			
+			
 			//spawn actor
 			SwAct = GetWorld()->SpawnActor<AswarmActor>(ActorClass, FVector(x, y, z), rot, SpawnParams);
-
+			SwAct->swarmClass = AgentClass;
+			SwAct->SpawnActors(AgentClass);
 
 			//adds actor to swarm array
 			swarmArray.Push(SwAct);
@@ -82,7 +84,7 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
 			//Avoidance(swarmArray[i]);
-			traceV = Avoidance(swarmArray[i]);// swarmArray[i]->LineTracer();
+			//traceV = Avoidance(swarmArray[i]);// swarmArray[i]->LineTracer();
 			if (swarmArray[i] != swarmArray[j])
 			{
 				dist = GetDistance(swarmArray[i], swarmArray[j]);
@@ -116,42 +118,42 @@ void AswarmController::ApplyBasicSwarming(float tick)
 
 	}
 }
-FVector AswarmController::Avoidance(AActor* act)
-{
-	FVector avoid = FVector().ZeroVector;
-	TArray<UStaticMeshComponent*> components;
-	UStaticMeshComponent* SM_Comp = NULL;
-	FRotator rot;
-	ECollisionChannel trace = ECollisionChannel::ECC_Visibility;
-	const FName TraceTag("Trace");
-	GetWorld()->DebugDrawTraceTag = TraceTag;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(act);
-	params.TraceTag = TraceTag;
-
-	act->GetComponents<UStaticMeshComponent>(components);
-	for (int32 i = 0; i<components.Num(); i++)
-	{
-		SM_Comp = components[i];
-		UStaticMesh* mesh = SM_Comp->StaticMesh;
-		
-	}
-	
-	rot = SM_Comp->GetComponentRotation()*90;
-	
-	
-	FHitResult hit;
-	FVector start = act->GetActorLocation();
-	//start += start.RightVector + 100;
-	FVector end = (rot.GetInverse().Vector().ForwardVector + start);
-	end.X += 10;
-	
-	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
-	
-	avoid -= hit.Location;
-
-	return avoid/2;
-}
+//FVector AswarmController::Avoidance(AActor* act)
+//{
+//	FVector avoid = FVector().ZeroVector;
+//	TArray<UStaticMeshComponent*> components;
+//	UStaticMeshComponent* SM_Comp = NULL;
+//	FRotator rot;
+//	ECollisionChannel trace = ECollisionChannel::ECC_Visibility;
+//	const FName TraceTag("Trace");
+//	GetWorld()->DebugDrawTraceTag = TraceTag;
+//	FCollisionQueryParams params;
+//	params.AddIgnoredActor(act);
+//	params.TraceTag = TraceTag;
+//
+//	act->GetComponents<UStaticMeshComponent>(components);
+//	for (int32 i = 0; i<components.Num(); i++)
+//	{
+//		SM_Comp = components[i];
+//		UStaticMesh* mesh = SM_Comp->StaticMesh;
+//		
+//	}
+//	
+//	rot = SM_Comp->GetComponentRotation()*90;
+//	
+//	
+//	FHitResult hit;
+//	FVector start = act->GetActorLocation();
+//	//start += start.RightVector + 100;
+//	FVector end = (rot.GetInverse().Vector().ForwardVector + start);
+//	end.X += 10;
+//	
+//	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
+//	
+//	avoid -= hit.Location;
+//
+//	return avoid/2;
+//}
 float AswarmController::GetDistance(AActor* a, AActor* b)
 {
 	float distance = 0;
