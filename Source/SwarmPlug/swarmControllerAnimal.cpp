@@ -150,19 +150,20 @@ Behaviours AswarmControllerAnimal::StateManager(AswarmActor* act,float tick)
 }
 void AswarmControllerAnimal::AnimalApply(float tick)
 {
-	FVector alignmentV = FVector().ZeroVector;
-	FVector cohesionV = FVector().ZeroVector;
-	FVector separationV = FVector().ZeroVector;
-	FVector boundV = FVector().ZeroVector;
-	FVector moveToV = FVector().ZeroVector;
-	FVector runV = FVector().ZeroVector;
-	FVector idleV = FVector().ZeroVector;
-	FVector totalV = FVector().ZeroVector;
-	FVector lineV = FVector::ZeroVector;
+	
 	
 	float dist = 0;
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
+		FVector alignmentV = FVector().ZeroVector;
+		FVector cohesionV = FVector().ZeroVector;
+		FVector separationV = FVector().ZeroVector;
+		FVector boundV = FVector().ZeroVector;
+		FVector moveToV = FVector().ZeroVector;
+		FVector runV = FVector().ZeroVector;
+		FVector idleV = FVector().ZeroVector;
+		FVector totalV = FVector().ZeroVector;
+		FVector lineV = FVector::ZeroVector;
 	
 		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
 		//lineV = Avoidance(swarmArray[i]);
