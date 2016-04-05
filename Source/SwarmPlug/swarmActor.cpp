@@ -76,6 +76,6 @@ void AswarmActor::SpawnActors(UClass* cl)
 	if (world)
 	{
 		actor = world->SpawnActor<AActor>(cl,GetActorLocation(),GetActorRotation());
-		actor->AttachRootComponentToActor(this);
+		//actor->AttachRootComponentToActor(this);
 	}
 }
