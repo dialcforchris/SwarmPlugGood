@@ -88,6 +88,8 @@ public:
 	//Makes Swarm
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		void CreateSwarm();
+	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		void AddRemoveAgents();
 	//Swarm Cohesion
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector cohesion(AswarmActor* b,float dist, AswarmActor* a);

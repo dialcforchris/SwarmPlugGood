@@ -124,6 +124,44 @@ void AswarmController::ApplyBasicSwarming(float tick)
 
 	}
 }
+void AswarmController::AddRemoveAgents()
+{
+	int MinMaxX = 1000 + this->GetActorLocation().X;
+	int MinMaxY = 1000 + this->GetActorLocation().Y;
+	int MinMaxZ = 800 + this->GetActorLocation().Z;
+	FRotator rot = FRotator().ZeroRotator;
+
+	if (swarmArray.Num() < swarmSize)
+	{
+		float x = FMath().RandRange(-MinMaxX, MinMaxX);
+		float y = FMath().RandRange(-MinMaxY, MinMaxY);
+		float z;
+		if (canFly)
+		{
+			z = FMath().RandRange(0, MinMaxZ);
+		}
+		else
+		{
+			z = this->GetActorLocation().Z;
+		}
+
+		FActorSpawnParameters SpawnParams;
+
+
+		//spawn actor
+		SwAct = GetWorld()->SpawnActor<AswarmActor>(ActorClass, FVector(x, y, z), rot, SpawnParams);
+		SwAct->swarmClass = AgentClass;
+		SwAct->SpawnActors(AgentClass);
+
+		//adds actor to swarm array
+		swarmArray.Push(SwAct);
+	}
+	if (swarmArray.Num() > swarmSize)
+	{
+		swarmArray.Pop(true);
+		//Destroy(swarmArray[swarmArray.Num()]);
+	}
+}
 //FVector AswarmController::Avoidance(AActor* act)
 //{
 //	FVector avoid = FVector().ZeroVector;
