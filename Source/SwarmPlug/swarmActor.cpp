@@ -42,24 +42,28 @@ void AswarmActor::Tick(float DeltaTime)
 FVector AswarmActor::LineTracer()
 {
 	FVector line = FVector().ZeroVector;
-	
-	FVector pos;
-	FRotator rot;
-	actor->GetActorEyesViewPoint(pos, rot);
-	ECollisionChannel trace = ECollisionChannel::ECC_MAX;
-	const FName TraceTag("Trace");
-	GetWorld()->DebugDrawTraceTag = TraceTag;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(this);
-	params.AddIgnoredActor(actor);
-	params.TraceTag = TraceTag;
-	pos.Z -= 10;
-	FHitResult hit;
-	FVector end = pos + (rot.Vector()*400);
 
-	GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
-	line -= hit.Location;
-	return line / 100;
+	if (actor)
+	{
+
+		FVector pos;
+		FRotator rot;
+		actor->GetActorEyesViewPoint(pos, rot);
+		ECollisionChannel trace = ECollisionChannel::ECC_MAX;
+		const FName TraceTag("Trace");
+		GetWorld()->DebugDrawTraceTag = TraceTag;
+		FCollisionQueryParams params;
+		params.AddIgnoredActor(this);
+		params.AddIgnoredActor(actor);
+		params.TraceTag = TraceTag;
+		pos.Z -= 10;
+		FHitResult hit;
+		FVector end = pos + (rot.Vector() * 200);
+
+		GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+		line = hit.Location;
+	}
+	return -(line / 100);
 }
 void AswarmActor::SpawnActors(UClass* cl)
 {
