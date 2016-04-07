@@ -164,7 +164,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 		FVector idleV = FVector().ZeroVector;
 		FVector totalV = FVector().ZeroVector;
 		FVector lineV = FVector::ZeroVector;
-	
+		lineV = swarmArray[i]->LineTracer();
 		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
 		//lineV = Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)

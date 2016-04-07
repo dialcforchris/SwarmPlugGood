@@ -71,9 +71,11 @@ void AswarmController::CreateSwarm()
 
 void AswarmController::ApplyBasicSwarming(float tick)
 {
-
+	
 	for (int i = 0; i < swarmArray.Num(); i++)
 	{
+		
+		
 		FVector alignmentV = FVector().ZeroVector;
 		FVector cohesionV = FVector().ZeroVector;
 		FVector separationV = FVector().ZeroVector;
@@ -81,8 +83,11 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		FVector traceV = FVector().ZeroVector;
 		totalV = FVector().ZeroVector;
 		float dist;
+
+		traceV = swarmArray[i]->LineTracer();
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
+			//swarmArray[i]->LineTracer();
 			//Avoidance(swarmArray[i]);
 			//traceV = Avoidance(swarmArray[i]);// swarmArray[i]->LineTracer();
 			if (swarmArray[i] != swarmArray[j])
@@ -109,6 +114,7 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		{
 			totalV.Z = 0;
 		}
+		//mesh->ComponentVelocity = (swarmArray[i]->velocity + totalV)*speed;
 		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
 	/*	if (swarmArray[i]->velocity.Size() > 1)
 		{

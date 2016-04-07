@@ -2,7 +2,7 @@
 
 #include "SwarmPlug.h"
 #include "swarmActor.h"
-
+#include "Kismet/KismetMathLibrary.h"
 // Sets default values
 AswarmActor::AswarmActor()
 {
@@ -34,7 +34,7 @@ void AswarmActor::Tick(float DeltaTime)
 	velocity = velocity.GetClampedToSize(0, 360);
 	SetActorRotation(velocity.Rotation());
 	actor->SetActorRotation(GetActorRotation());
-	
+	///LineTracer();
 
 }
 
@@ -42,33 +42,24 @@ void AswarmActor::Tick(float DeltaTime)
 FVector AswarmActor::LineTracer()
 {
 	FVector line = FVector().ZeroVector;
-	TArray<UStaticMeshComponent*> components;
-	UStaticMeshComponent* SM_Comp = NULL;
+	
+	FVector pos;
 	FRotator rot;
-	ECollisionChannel trace = ECollisionChannel::ECC_Visibility;
+	actor->GetActorEyesViewPoint(pos, rot);
+	ECollisionChannel trace = ECollisionChannel::ECC_MAX;
 	const FName TraceTag("Trace");
 	GetWorld()->DebugDrawTraceTag = TraceTag;
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(this);
+	params.AddIgnoredActor(actor);
 	params.TraceTag = TraceTag;
-
-	GetComponents<UStaticMeshComponent>(components);
-	for (int32 i = 0; i<components.Num(); i++)
-	{
-		SM_Comp = components[i];
-		UStaticMesh* mesh = SM_Comp->StaticMesh;
-
-	}
-	rot = SM_Comp->GetComponentRotation() - GetActorRotation();
-
-	
+	pos.Z -= 10;
 	FHitResult hit;
-	FVector start = GetActorLocation();
-	FVector end = (rot.Vector().ForwardVector + start)*10;
-	//end.X += 10;
-	//end = end + start;
-	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
-	return GetActorLocation() +line / 100;
+	FVector end = pos + (rot.Vector()*400);
+
+	GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+	line -= hit.Location;
+	return line / 100;
 }
 void AswarmActor::SpawnActors(UClass* cl)
 {
