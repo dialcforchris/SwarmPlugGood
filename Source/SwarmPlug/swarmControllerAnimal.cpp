@@ -11,6 +11,7 @@ AswarmControllerAnimal::AswarmControllerAnimal()
 
 	//set variables to sensible amounts
 	playerDistance = 100;
+	traceLength = 50;
 	speed = 0.5;
 	scaleSep = 2;
 	playerAvoidance = 10;

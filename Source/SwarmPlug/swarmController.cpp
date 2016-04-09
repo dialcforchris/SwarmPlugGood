@@ -150,7 +150,7 @@ FHitResult AswarmController::ConeTracer(AswarmActor* act,ECollisionChannel chann
 		
 		params.AddIgnoredActor(act);
 		params.AddIgnoredActor(act->actor);
-		float radius = 0;
+		radius = 0;
 		pos.Z -= 10;
 		if (!canFly)
 		{
@@ -165,7 +165,7 @@ FHitResult AswarmController::ConeTracer(AswarmActor* act,ECollisionChannel chann
 		FVector randomCone = FMath::VRandCone(rot.Vector(), radius);
 		//randomCone.Z = 0;
 		///randomCone.Y = 0;
-		FVector end = pos + (randomCone * 200);
+		FVector end = pos + (randomCone * traceLength);
 
 		GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
 		

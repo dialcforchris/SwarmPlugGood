@@ -97,6 +97,10 @@ public:
 		FHitResult hit;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
 		bool renderConeTrace = true;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+		float traceLength = 200;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+		float radius;
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector Collision(FHitResult hit);
 	//Swarm Cohesion
