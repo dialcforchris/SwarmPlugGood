@@ -83,46 +83,95 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		FVector traceV = FVector().ZeroVector;
 		totalV = FVector().ZeroVector;
 		float dist;
+		 agents = 0;
 
-		traceV = swarmArray[i]->LineTracer();
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
-			//swarmArray[i]->LineTracer();
-			//Avoidance(swarmArray[i]);
-			//traceV = Avoidance(swarmArray[i]);// swarmArray[i]->LineTracer();
+			dist = 0;
 			if (swarmArray[i] != swarmArray[j])
 			{
 				dist = GetDistance(swarmArray[i], swarmArray[j]);
-				//get results
-				if (SeparationOn)
-					separationV = separation(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-300, 300);
-				if (AlignmentOn)
-					alignmentV = alignment(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
-				if (CohesionOn)
-					cohesionV = cohesion(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
+				
+				{
+					//get results
+					if (SeparationOn)
+						separationV = separation(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-300, 300);
+					if (AlignmentOn)
+						alignmentV = alignment(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
+					if (CohesionOn)
+						cohesionV = cohesion(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
+					
+				}
+				
 			}
 		}
 		if (BoundariesOn)
 			boundV = Boundaries(swarmArray[i]);
-	
+		traceV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_WorldStatic));
+
 		//scale the returned values
 		separationV = separationV *scaleSep;
-		cohesionV = (cohesionV *scaleCoh).GetClampedToSize(-20, 20);
-		alignmentV = (alignmentV * scaleAli).GetClampedToSize(-200, 200);
-		totalV = separationV + cohesionV + alignmentV + boundV + traceV;//Avoidance(swarmArray[i]);
+		cohesionV = ((cohesionV / swarmArray.Num()-1) *scaleCoh);// .GetClampedToSize(-20, 20);
+		alignmentV = ((alignmentV / agents) * scaleAli);// .GetClampedToSize(-200, 200);
+		totalV = traceV + separationV + boundV + cohesionV;// separationV + cohesionV + alignmentV + traceV + boundV;//Avoidance(swarmArray[i]);
 		if (!canFly)
 		{
 			totalV.Z = 0;
 		}
-		//mesh->ComponentVelocity = (swarmArray[i]->velocity + totalV)*speed;
+		
 		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
-	/*	if (swarmArray[i]->velocity.Size() > 1)
+		if (swarmArray[i]->velocity.Size() > 1)
 		{
 			swarmArray[i]->velocity -= swarmArray[i]->velocity /100;
-		}*/
+		}
 		
 
 	}
+}
+FHitResult AswarmController::ConeTracer(AswarmActor* act,ECollisionChannel channel)
+{
+	FHitResult hit;
+	if (act->actor)
+	{
+
+		FVector pos;
+		FRotator rot;
+		act->actor->GetActorEyesViewPoint(pos, rot);
+
+		ECollisionChannel trace = channel;// ECollisionChannel::ECC_MAX;
+		const FName TraceTag("Trace");
+		FCollisionQueryParams params;
+		if (renderConeTrace)
+		{
+			
+			GetWorld()->DebugDrawTraceTag = TraceTag;
+			params.TraceTag = TraceTag;
+		}
+		
+		params.AddIgnoredActor(act);
+		params.AddIgnoredActor(act->actor);
+		float radius = 0;
+		pos.Z -= 10;
+		if (!canFly)
+		{
+			rot.Pitch = 0;
+			rot.Roll = 0;
+			radius = 0.5;
+		}
+		else
+		{
+			radius = 1;
+		}
+		FVector randomCone = FMath::VRandCone(rot.Vector(), radius);
+		//randomCone.Z = 0;
+		///randomCone.Y = 0;
+		FVector end = pos + (randomCone * 200);
+
+		GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+		
+	}
+
+	return hit ;
 }
 void AswarmController::AddRemoveAgents()
 {
@@ -162,42 +211,11 @@ void AswarmController::AddRemoveAgents()
 		//Destroy(swarmArray[swarmArray.Num()]);
 	}
 }
-//FVector AswarmController::Avoidance(AActor* act)
-//{
-//	FVector avoid = FVector().ZeroVector;
-//	TArray<UStaticMeshComponent*> components;
-//	UStaticMeshComponent* SM_Comp = NULL;
-//	FRotator rot;
-//	ECollisionChannel trace = ECollisionChannel::ECC_Visibility;
-//	const FName TraceTag("Trace");
-//	GetWorld()->DebugDrawTraceTag = TraceTag;
-//	FCollisionQueryParams params;
-//	params.AddIgnoredActor(act);
-//	params.TraceTag = TraceTag;
-//
-//	act->GetComponents<UStaticMeshComponent>(components);
-//	for (int32 i = 0; i<components.Num(); i++)
-//	{
-//		SM_Comp = components[i];
-//		UStaticMesh* mesh = SM_Comp->StaticMesh;
-//		
-//	}
-//	
-//	rot = SM_Comp->GetComponentRotation()*90;
-//	
-//	
-//	FHitResult hit;
-//	FVector start = act->GetActorLocation();
-//	//start += start.RightVector + 100;
-//	FVector end = (rot.GetInverse().Vector().ForwardVector + start);
-//	end.X += 10;
-//	
-//	GetWorld()->LineTraceSingleByChannel(hit, start, end, trace, params);
-//	
-//	avoid -= hit.Location;
-//
-//	return avoid/2;
-//}
+FVector AswarmController::Collision(FHitResult hit)
+{
+	return -(hit.Location/20);
+}
+
 float AswarmController::GetDistance(AActor* a, AActor* b)
 {
 	float distance = 0;
@@ -250,7 +268,7 @@ FVector AswarmController::alignmentTwo(FVector b)
 
 FVector AswarmController::alignment(AswarmActor* b,float dist,AswarmActor* a)
 {
-	int count = 0;
+	
 //	for (int i = 0; i < swarmArray.Num(); i++)
 	{
 		//if (b != swarmArray[i])// && b->behave == swarmArray[i]->behave)
@@ -258,11 +276,11 @@ FVector AswarmController::alignment(AswarmActor* b,float dist,AswarmActor* a)
 			if (dist < maxDist)
 			{
 				ali = ali + a->GetVelocity();
-				count++;
+				
 			}
 			
 		}
-		ali = ali /count;
+		
 	}
 	return ((ali - b->GetVelocity())/100).GetClampedToMaxSize(100);
 	
@@ -277,7 +295,7 @@ FVector AswarmController::separation(AswarmActor* b,float dist,AswarmActor* a)
 		{
 			//if (b->behave == swarmArray[i]->behave)
 			{
-				if (dist < maxDist)
+			if (dist < maxDist)
 				{
 
 					sep = sep - (a->GetActorLocation() - b->GetActorLocation());// minus;
@@ -299,13 +317,14 @@ FVector AswarmController::cohesion(AswarmActor* b,float dist,AswarmActor* a)
 				if (dist < maxDist)
 				{
 					coh = coh + a->GetActorLocation();
+					
 				}
 		}
 	}
 	
 	
 	coh = coh - b->GetActorLocation();
-	return coh;
+	return coh / swarmArray.Num();
 }
 
 

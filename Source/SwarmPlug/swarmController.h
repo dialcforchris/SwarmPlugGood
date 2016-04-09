@@ -90,6 +90,15 @@ public:
 		void CreateSwarm();
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		void AddRemoveAgents();
+	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		FHitResult ConeTracer(AswarmActor* act, ECollisionChannel channel);
+	//UPROPERTY(BlueprintReadWrite)
+	int32 agents;
+		FHitResult hit;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+		bool renderConeTrace = true;
+	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+		FVector Collision(FHitResult hit);
 	//Swarm Cohesion
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector cohesion(AswarmActor* b,float dist, AswarmActor* a);
