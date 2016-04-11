@@ -82,6 +82,7 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		FVector boundV = FVector().ZeroVector;
 		FVector traceV = FVector().ZeroVector;
 		totalV = FVector().ZeroVector;
+		FVector Velocity = FVector::ZeroVector;
 		float dist;
 		 agents = 0;
 
@@ -113,13 +114,13 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		separationV = separationV *scaleSep;
 		cohesionV = ((cohesionV / swarmArray.Num()-1) *scaleCoh);// .GetClampedToSize(-20, 20);
 		alignmentV = ((alignmentV / agents) * scaleAli);// .GetClampedToSize(-200, 200);
-		totalV = traceV + separationV + boundV + cohesionV;// separationV + cohesionV + alignmentV + traceV + boundV;//Avoidance(swarmArray[i]);
+		totalV = traceV + separationV + boundV + cohesionV + alignmentV + swarmArray[i]->GetVelocity();// separationV + cohesionV + alignmentV + traceV + boundV;//Avoidance(swarmArray[i]);
 		if (!canFly)
 		{
 			totalV.Z = 0;
 		}
 		
-		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV)*speed;
+		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV) * speed;
 		if (swarmArray[i]->velocity.Size() > 1)
 		{
 			swarmArray[i]->velocity -= swarmArray[i]->velocity /100;
