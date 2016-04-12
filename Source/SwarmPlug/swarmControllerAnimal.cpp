@@ -167,7 +167,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 		FVector idleV = FVector().ZeroVector;
 		FVector totalV = FVector().ZeroVector;
 		FVector lineV = FVector::ZeroVector;
-		swarmArray[i]->behave = StateManager(swarmArray[i],tick);
+		swarmArray[i]->behave = Behaviours::MOVETOTARGET;// StateManager(swarmArray[i], tick);
 		//lineV = Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
@@ -231,10 +231,10 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 					{
 
 						if (SeparationOn)
-							separationV = separation(swarmArray[i], dist, swarmArray[j]);
+							separationV += separation(swarmArray[i], dist, swarmArray[j]);
 						if (CohesionOn)
-							cohesionV = cohesion(swarmArray[i], dist, swarmArray[j]) / 100;
-						alignmentV = alignment(swarmArray[i], dist, swarmArray[j]);
+							cohesionV += cohesion(swarmArray[i], dist, swarmArray[j]) / 100;
+						alignmentV += alignment(swarmArray[i], dist, swarmArray[j]);
 						agents++;
 					}
 
@@ -242,7 +242,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 			}
 		}
 		//scale the returned values
-		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_Visibility));// swarmArray[i]->LineTracer();
+		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_WorldDynamic));// swarmArray[i]->LineTracer();
 		separationV = (separationV *scaleSep);
 		cohesionV = ((cohesionV/agents) *scaleCoh).GetClampedToSize(-20, 20);
 		alignmentV = ((alignmentV/agents) * scaleAli).GetClampedToSize(-200, 200);

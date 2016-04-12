@@ -96,11 +96,11 @@ void AswarmController::ApplyBasicSwarming(float tick)
 				{
 					//get results
 					if (SeparationOn)
-						separationV = separation(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-300, 300);
+						separationV += separation(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-300, 300);
 					if (AlignmentOn)
-						alignmentV = alignment(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
+						alignmentV += alignment(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
 					if (CohesionOn)
-						cohesionV = cohesion(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
+						cohesionV += cohesion(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
 					
 				}
 				
@@ -113,15 +113,18 @@ void AswarmController::ApplyBasicSwarming(float tick)
 		//scale the returned values
 		separationV = separationV *scaleSep;
 		cohesionV = ((cohesionV / swarmArray.Num()-1) *scaleCoh);// .GetClampedToSize(-20, 20);
-		alignmentV = ((alignmentV / agents) * scaleAli);// .GetClampedToSize(-200, 200);
+		alignmentV = ((alignmentV / swarmArray.Num()-1) * scaleAli);// .GetClampedToSize(-200, 200);
 		totalV = traceV + separationV + boundV + cohesionV + alignmentV + swarmArray[i]->GetVelocity();// separationV + cohesionV + alignmentV + traceV + boundV;//Avoidance(swarmArray[i]);
 		if (!canFly)
 		{
 			totalV.Z = 0;
 		}
-		
+		if (totalV.Z <= 0)
+		{
+			totalV.Z += 10;
+		}
 		swarmArray[i]->velocity = (swarmArray[i]->velocity + totalV) * speed;
-		if (swarmArray[i]->velocity.Size() > 1)
+		if (swarmArray[i]->velocity.Size() > 200)
 		{
 			swarmArray[i]->velocity -= swarmArray[i]->velocity /100;
 		}
@@ -269,7 +272,7 @@ FVector AswarmController::alignmentTwo(FVector b)
 
 FVector AswarmController::alignment(AswarmActor* b,float dist,AswarmActor* a)
 {
-	
+	ali = FVector::ZeroVector;
 //	for (int i = 0; i < swarmArray.Num(); i++)
 	{
 		//if (b != swarmArray[i])// && b->behave == swarmArray[i]->behave)
@@ -325,7 +328,7 @@ FVector AswarmController::cohesion(AswarmActor* b,float dist,AswarmActor* a)
 	
 	
 	coh = coh - b->GetActorLocation();
-	return coh / swarmArray.Num();
+	return coh;// / swarmArray.Num();
 }
 
 
