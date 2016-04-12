@@ -9,6 +9,7 @@
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 class AActor;
+struct FHitResult;
 class UObject;
 struct FVector;
 #ifdef SWARMING_SwarmingBPLibrary_generated_h
@@ -17,6 +18,17 @@ struct FVector;
 #define SWARMING_SwarmingBPLibrary_generated_h
 
 #define SwarmPlugGood_Plugins_Swarming_Source_Swarming_Public_SwarmingBPLibrary_h_26_RPC_WRAPPERS \
+ \
+	DECLARE_FUNCTION(execConeTrace) \
+	{ \
+		P_GET_OBJECT(AActor,Z_Param_act); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_radius); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_traceLength); \
+		P_GET_UBOOL(Z_Param_renderConeTrace); \
+		P_GET_UBOOL(Z_Param_canFly); \
+		P_FINISH; \
+		*(FHitResult*)Z_Param__Result=USwarmingBPLibrary::ConeTrace(Z_Param_act,Z_Param_radius,Z_Param_traceLength,Z_Param_renderConeTrace,Z_Param_canFly); \
+	} \
  \
 	DECLARE_FUNCTION(execGetDistance) \
 	{ \
@@ -87,6 +99,17 @@ struct FVector;
 
 
 #define SwarmPlugGood_Plugins_Swarming_Source_Swarming_Public_SwarmingBPLibrary_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
+ \
+	DECLARE_FUNCTION(execConeTrace) \
+	{ \
+		P_GET_OBJECT(AActor,Z_Param_act); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_radius); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_traceLength); \
+		P_GET_UBOOL(Z_Param_renderConeTrace); \
+		P_GET_UBOOL(Z_Param_canFly); \
+		P_FINISH; \
+		*(FHitResult*)Z_Param__Result=USwarmingBPLibrary::ConeTrace(Z_Param_act,Z_Param_radius,Z_Param_traceLength,Z_Param_renderConeTrace,Z_Param_canFly); \
+	} \
  \
 	DECLARE_FUNCTION(execGetDistance) \
 	{ \

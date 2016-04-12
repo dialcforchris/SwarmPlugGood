@@ -35,11 +35,14 @@ class USwarmingBPLibrary : public UBlueprintFunctionLibrary
 		static FVector Cohesion(AActor* act, AActor* agent);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Apply Boids", Keywords = "Flocking Swarm AI"), Category = "Insect Swarming")
 		static void ApplyBasicSwarming(float EventTick, TArray<AActor*>swarmArray, bool canFly, TArray<FVector>& velocityArray,
-		float separationWeight = 1, float alignmentWeight = 0.1, float cohesionWeight = 0.1, bool separationOn = true, 
+		float separationWeight = 1.0f, float alignmentWeight = 0.1f, float cohesionWeight = 0.1f, bool separationOn = true, 
 		bool alignmentOn = true,bool cohesionOn = true);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Create Swarm", Keywords = "Flocking Swarm AI"), Category = "Swarming")
-		static TArray<AActor*> CreateSwarm(UClass* agentClass,bool canFly,int32 swarmSize = 10, float minMaxX = 1000,float minMaxY = 1000, float maxZ = 800);
+		static TArray<AActor*> CreateSwarm(UClass* agentClass,bool canFly,int32 swarmSize = 10, float minMaxX = 1000.0f,float minMaxY = 1000.0f, float maxZ = 800.0f);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Get Distance", Keywords = "Flocking Swarm AI"), Category = "Swarming")
 		static float GetDistance(AActor* act, AActor* agent);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "Cone Trace", Keywords = "Flocking Swarm AI"), Category = "Swarming")
+		static FHitResult ConeTrace(AActor* act,float radius = 1.0f,float traceLength = 200.0f, bool renderConeTrace = true,bool canFly = false);
+	
 };
 

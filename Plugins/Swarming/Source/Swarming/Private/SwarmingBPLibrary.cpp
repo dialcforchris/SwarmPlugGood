@@ -61,16 +61,16 @@ void USwarmingBPLibrary::ApplyBasicSwarming(float EventTick, TArray<AActor*> swa
 				if (dist <1000)
 				{
 					if (separationOn)
-					separationV += separationV - (Separation(swarmArray[i], swarmArray[j])/100);
+					separationV = separationV + (Separation(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-300,300);
 					if (alignmentOn)
-					alignmentV += alignmentV + Alignment(swarmArray[i], swarmArray[j])/100;
+					alignmentV = (alignmentV + Alignment(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-100,100);
 					if (cohesionOn)
-					cohesionV += cohesionV + Cohesion(swarmArray[i], swarmArray[j])/100;
+					cohesionV = cohesionV + (Cohesion(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-100,100);
 				}
 			}
 		}
 		cohesionV = (cohesionV - swarmArray[i]->GetActorLocation())/swarmArray.Num()-1;
-		alignmentV = alignmentV / swarmArray.Num() - 1;
+		//alignmentV = alignmentV / swarmArray.Num() - 1;
 		totalV = (separationV*separationWeight) + (alignmentV*alignmentWeight)
 			+ (cohesionV*cohesionWeight) + swarmArray[i]->GetVelocity();
 
@@ -80,6 +80,10 @@ void USwarmingBPLibrary::ApplyBasicSwarming(float EventTick, TArray<AActor*> swa
 		}
 		velocityArray[i] = (velocityArray[i] + totalV) * speed;
 
+		if (velocityArray[i].Size() > 1)
+		{
+			velocityArray[i] -= velocityArray[i] / 100;
+		}
 		swarmArray[i]->SetActorLocation(swarmArray[i]->GetActorLocation() + velocityArray[i] * EventTick);
 		
 		velocityArray[i] = velocityArray[i].GetClampedToSize(0, 360);
@@ -128,4 +132,47 @@ TArray<AActor*> USwarmingBPLibrary::CreateSwarm(UClass* agentClass, bool canFly,
 		}
 	}
 	return swarmArray;
+}
+FHitResult USwarmingBPLibrary::ConeTrace(AActor* act,float radius,float traceLength, bool renderConeTrace, bool canFly)
+{
+	FHitResult hit;
+	
+	
+
+		FVector pos;
+		FRotator rot;
+		act->GetActorEyesViewPoint(pos, rot);
+
+		ECollisionChannel trace = ECollisionChannel::ECC_MAX;
+		const FName TraceTag("Trace");
+		FCollisionQueryParams params;
+		if (renderConeTrace)
+		{
+
+			act->GetWorld()->DebugDrawTraceTag = TraceTag;
+			params.TraceTag = TraceTag;
+		}
+
+		params.AddIgnoredActor(act);
+		
+		radius = 0;
+		pos.Z -= 10;
+		if (!canFly)
+		{
+			rot.Pitch = 0;
+			rot.Roll = 0;
+			radius = 0.5;
+		}
+		else
+		{
+			radius = 1;
+		}
+		FVector randomCone = FMath::VRandCone(rot.Vector(), radius);
+		FVector end = pos + (randomCone * traceLength);
+
+		act->GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+
+	
+
+	return hit;
 }
