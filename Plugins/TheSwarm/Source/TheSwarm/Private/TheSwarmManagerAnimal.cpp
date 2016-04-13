@@ -7,10 +7,10 @@ ATheSwarmManagerAnimal::ATheSwarmManagerAnimal(const class FObjectInitializer& P
 	
 	canFly = false;
 	//set variables to sensible amounts
-	traceLength = 50;
+	traceLength = 200;
 	speed = 1;
 	scaleSep = 1;
-	maxDist = 700;
+	maxDist = 200;
 }
 void ATheSwarmManagerAnimal::BeginPlay()
 {
@@ -222,7 +222,19 @@ void ATheSwarmManagerAnimal::AnimalApply(float tick)
 			}
 		}
 		//scale the returned values
-		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_WorldDynamic));// swarmArray[i]->LineTracer();
+		if (!SeparationOn)
+		{
+			scaleSep = 0;
+		}
+		if (!CohesionOn)
+		{
+			scaleCoh = 0;
+		}
+		if (!AlignmentOn)
+		{
+			scaleAli = 0;
+		}
+		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_Camera));
 		separationV = (separationV *scaleSep);
 		cohesionV = ((cohesionV / agents) *scaleCoh).GetClampedToSize(-20, 20);
 		alignmentV = ((alignmentV / agents) * scaleAli).GetClampedToSize(-200, 200);

@@ -19,7 +19,7 @@ public:
 		//swarm array
 		UPROPERTY(BlueprintReadOnly)
 		TArray <ATheSwarmActor*> swarmArray;
-		//the size of the swarm
+		//the size of the swarm (should always be greater than 2)
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 			int32 swarmSize = 10;
 		//max agent distance
@@ -50,22 +50,23 @@ public:
 			float MinZ = 100;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Boundaries)
 			float boundaryFix = 500;
-		//The Actor Class used in the swarm
+		//The TheSwarmActor Class needed to spawn the swarm (should always be inherited from TheSwarmActor)
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
-			TSubclassOf<AActor> ActorClass;
+			TSubclassOf<ATheSwarmActor> TheSwarmActorClass;
+		//The class for the swarm
 		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
 			UClass* AgentClass;
 		//Swarm Actor
 		ATheSwarmActor* SwAct;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		UPROPERTY(BlueprintReadWrite)
 			FVector sep;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		UPROPERTY(BlueprintReadWrite)
 			FVector ali;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		UPROPERTY(BlueprintReadWrite)
 			FVector coh;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		UPROPERTY(BlueprintReadWrite)
 			FVector Bound;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		UPROPERTY(BlueprintReadWrite)
 			FVector totalV;
 
 			//////////////////////////////

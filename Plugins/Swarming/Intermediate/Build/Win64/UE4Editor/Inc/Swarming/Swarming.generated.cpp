@@ -13,14 +13,15 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 	{
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"Alignment",(Native)&USwarmingBPLibrary::execAlignment);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"ApplyBasicSwarming",(Native)&USwarmingBPLibrary::execApplyBasicSwarming);
+		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"Avoidance",(Native)&USwarmingBPLibrary::execAvoidance);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"Cohesion",(Native)&USwarmingBPLibrary::execCohesion);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"ConeTrace",(Native)&USwarmingBPLibrary::execConeTrace);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"CreateSwarm",(Native)&USwarmingBPLibrary::execCreateSwarm);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"GetDistance",(Native)&USwarmingBPLibrary::execGetDistance);
 		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"Separation",(Native)&USwarmingBPLibrary::execSeparation);
-		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"SwarmingSampleFunction",(Native)&USwarmingBPLibrary::execSwarmingSampleFunction);
+		FNativeFunctionRegistrar::RegisterFunction(USwarmingBPLibrary::StaticClass(),"SetLocation",(Native)&USwarmingBPLibrary::execSetLocation);
 	}
-	IMPLEMENT_CLASS(USwarmingBPLibrary, 584176500);
+	IMPLEMENT_CLASS(USwarmingBPLibrary, 3769854883);
 #if USE_COMPILED_IN_NATIVES
 // Cross Module References
 	COREUOBJECT_API class UScriptStruct* Z_Construct_UScriptStruct_FVector();
@@ -31,12 +32,13 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_Alignment();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_ApplyBasicSwarming();
+	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_Avoidance();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_Cohesion();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_ConeTrace();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_CreateSwarm();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_GetDistance();
 	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_Separation();
-	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_SwarmingSampleFunction();
+	SWARMING_API class UFunction* Z_Construct_UFunction_USwarmingBPLibrary_SetLocation();
 	SWARMING_API class UClass* Z_Construct_UClass_USwarmingBPLibrary_NoRegister();
 	SWARMING_API class UClass* Z_Construct_UClass_USwarmingBPLibrary();
 	SWARMING_API class UPackage* Z_Construct_UPackage_Swarming();
@@ -74,20 +76,26 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 		{
 			float EventTick;
 			TArray<AActor*> swarmArray;
-			bool canFly;
 			TArray<FVector> velocityArray;
+			bool canFly;
+			TArray<AActor*> outActors;
+			TArray<FVector> outVelocities;
 			float separationWeight;
 			float alignmentWeight;
 			float cohesionWeight;
 			bool separationOn;
 			bool alignmentOn;
 			bool cohesionOn;
+			float maxAgentDistance;
+			float speed;
 		};
 		UObject* Outer=Z_Construct_UClass_USwarmingBPLibrary();
 		static UFunction* ReturnFunction = NULL;
 		if (!ReturnFunction)
 		{
 			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("ApplyBasicSwarming"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04422401, 65535, sizeof(SwarmingBPLibrary_eventApplyBasicSwarming_Parms));
+			UProperty* NewProp_speed = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("speed"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(speed, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
+			UProperty* NewProp_maxAgentDistance = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("maxAgentDistance"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(maxAgentDistance, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
 			CPP_BOOL_PROPERTY_BITMASK_STRUCT(cohesionOn, SwarmingBPLibrary_eventApplyBasicSwarming_Parms, bool);
 			UProperty* NewProp_cohesionOn = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("cohesionOn"), RF_Public|RF_Transient|RF_Native) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(cohesionOn, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080, CPP_BOOL_PROPERTY_BITMASK(cohesionOn, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), sizeof(bool), true);
 			CPP_BOOL_PROPERTY_BITMASK_STRUCT(alignmentOn, SwarmingBPLibrary_eventApplyBasicSwarming_Parms, bool);
@@ -97,10 +105,14 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 			UProperty* NewProp_cohesionWeight = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("cohesionWeight"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(cohesionWeight, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
 			UProperty* NewProp_alignmentWeight = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("alignmentWeight"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(alignmentWeight, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
 			UProperty* NewProp_separationWeight = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("separationWeight"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(separationWeight, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
-			UProperty* NewProp_velocityArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(velocityArray, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000180);
-			UProperty* NewProp_velocityArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_velocityArray, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UStructProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UScriptStruct_FVector());
+			UProperty* NewProp_outVelocities = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("outVelocities"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(outVelocities, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000180);
+			UProperty* NewProp_outVelocities_Inner = new(EC_InternalUseOnlyConstructor, NewProp_outVelocities, TEXT("outVelocities"), RF_Public|RF_Transient|RF_Native) UStructProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UScriptStruct_FVector());
+			UProperty* NewProp_outActors = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("outActors"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(outActors, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000180);
+			UProperty* NewProp_outActors_Inner = new(EC_InternalUseOnlyConstructor, NewProp_outActors, TEXT("outActors"), RF_Public|RF_Transient|RF_Native) UObjectProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UClass_AActor_NoRegister());
 			CPP_BOOL_PROPERTY_BITMASK_STRUCT(canFly, SwarmingBPLibrary_eventApplyBasicSwarming_Parms, bool);
 			UProperty* NewProp_canFly = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("canFly"), RF_Public|RF_Transient|RF_Native) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(canFly, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080, CPP_BOOL_PROPERTY_BITMASK(canFly, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), sizeof(bool), true);
+			UProperty* NewProp_velocityArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(velocityArray, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
+			UProperty* NewProp_velocityArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_velocityArray, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UStructProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UScriptStruct_FVector());
 			UProperty* NewProp_swarmArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("swarmArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(swarmArray, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
 			UProperty* NewProp_swarmArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_swarmArray, TEXT("swarmArray"), RF_Public|RF_Transient|RF_Native) UObjectProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UClass_AActor_NoRegister());
 			UProperty* NewProp_EventTick = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("EventTick"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(EventTick, SwarmingBPLibrary_eventApplyBasicSwarming_Parms), 0x0000000000000080);
@@ -113,9 +125,38 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_alignmentWeight"), TEXT("0.100000"));
 			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_cohesionOn"), TEXT("true"));
 			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_cohesionWeight"), TEXT("0.100000"));
+			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_maxAgentDistance"), TEXT("500.000000"));
 			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_separationOn"), TEXT("true"));
 			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_separationWeight"), TEXT("1.000000"));
+			MetaData->SetValue(ReturnFunction, TEXT("CPP_Default_speed"), TEXT("1.000000"));
 			MetaData->SetValue(ReturnFunction, TEXT("DisplayName"), TEXT("Apply Boids"));
+			MetaData->SetValue(ReturnFunction, TEXT("Keywords"), TEXT("Flocking Swarm AI"));
+			MetaData->SetValue(ReturnFunction, TEXT("ModuleRelativePath"), TEXT("Public/SwarmingBPLibrary.h"));
+			MetaData->SetValue(ReturnFunction, TEXT("ToolTip"), TEXT("Applies a basic swarming algorithm"));
+#endif
+		}
+		return ReturnFunction;
+	}
+	UFunction* Z_Construct_UFunction_USwarmingBPLibrary_Avoidance()
+	{
+		struct SwarmingBPLibrary_eventAvoidance_Parms
+		{
+			FHitResult hit;
+			FVector ReturnValue;
+		};
+		UObject* Outer=Z_Construct_UClass_USwarmingBPLibrary();
+		static UFunction* ReturnFunction = NULL;
+		if (!ReturnFunction)
+		{
+			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("Avoidance"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04822401, 65535, sizeof(SwarmingBPLibrary_eventAvoidance_Parms));
+			UProperty* NewProp_ReturnValue = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("ReturnValue"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(ReturnValue, SwarmingBPLibrary_eventAvoidance_Parms), 0x0000000000000580, Z_Construct_UScriptStruct_FVector());
+			UProperty* NewProp_hit = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("hit"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(hit, SwarmingBPLibrary_eventAvoidance_Parms), 0x0000008000000080, Z_Construct_UScriptStruct_FHitResult());
+			ReturnFunction->Bind();
+			ReturnFunction->StaticLink();
+#if WITH_METADATA
+			UMetaData* MetaData = ReturnFunction->GetOutermost()->GetMetaData();
+			MetaData->SetValue(ReturnFunction, TEXT("Category"), TEXT("Swarming"));
+			MetaData->SetValue(ReturnFunction, TEXT("DisplayName"), TEXT("Trace Avoidance"));
 			MetaData->SetValue(ReturnFunction, TEXT("Keywords"), TEXT("Flocking Swarm AI"));
 			MetaData->SetValue(ReturnFunction, TEXT("ModuleRelativePath"), TEXT("Public/SwarmingBPLibrary.h"));
 #endif
@@ -196,23 +237,26 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 		{
 			UClass* agentClass;
 			bool canFly;
+			TArray<AActor*> swarmArray;
+			TArray<FVector> velocityArray;
 			int32 swarmSize;
 			float minMaxX;
 			float minMaxY;
 			float maxZ;
-			TArray<AActor*> ReturnValue;
 		};
 		UObject* Outer=Z_Construct_UClass_USwarmingBPLibrary();
 		static UFunction* ReturnFunction = NULL;
 		if (!ReturnFunction)
 		{
-			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("CreateSwarm"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04022401, 65535, sizeof(SwarmingBPLibrary_eventCreateSwarm_Parms));
-			UProperty* NewProp_ReturnValue = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("ReturnValue"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(ReturnValue, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000580);
-			UProperty* NewProp_ReturnValue_Inner = new(EC_InternalUseOnlyConstructor, NewProp_ReturnValue, TEXT("ReturnValue"), RF_Public|RF_Transient|RF_Native) UObjectProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UClass_AActor_NoRegister());
+			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("CreateSwarm"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04422401, 65535, sizeof(SwarmingBPLibrary_eventCreateSwarm_Parms));
 			UProperty* NewProp_maxZ = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("maxZ"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(maxZ, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080);
 			UProperty* NewProp_minMaxY = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("minMaxY"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(minMaxY, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080);
 			UProperty* NewProp_minMaxX = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("minMaxX"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(minMaxX, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080);
 			UProperty* NewProp_swarmSize = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("swarmSize"), RF_Public|RF_Transient|RF_Native) UIntProperty(CPP_PROPERTY_BASE(swarmSize, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080);
+			UProperty* NewProp_velocityArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(velocityArray, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000180);
+			UProperty* NewProp_velocityArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_velocityArray, TEXT("velocityArray"), RF_Public|RF_Transient|RF_Native) UStructProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UScriptStruct_FVector());
+			UProperty* NewProp_swarmArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("swarmArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(swarmArray, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000180);
+			UProperty* NewProp_swarmArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_swarmArray, TEXT("swarmArray"), RF_Public|RF_Transient|RF_Native) UObjectProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UClass_AActor_NoRegister());
 			CPP_BOOL_PROPERTY_BITMASK_STRUCT(canFly, SwarmingBPLibrary_eventCreateSwarm_Parms, bool);
 			UProperty* NewProp_canFly = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("canFly"), RF_Public|RF_Transient|RF_Native) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(canFly, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080, CPP_BOOL_PROPERTY_BITMASK(canFly, SwarmingBPLibrary_eventCreateSwarm_Parms), sizeof(bool), true);
 			UProperty* NewProp_agentClass = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("agentClass"), RF_Public|RF_Transient|RF_Native) UClassProperty(CPP_PROPERTY_BASE(agentClass, SwarmingBPLibrary_eventCreateSwarm_Parms), 0x0000000000000080, Z_Construct_UClass_UObject_NoRegister());
@@ -288,27 +332,31 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 		}
 		return ReturnFunction;
 	}
-	UFunction* Z_Construct_UFunction_USwarmingBPLibrary_SwarmingSampleFunction()
+	UFunction* Z_Construct_UFunction_USwarmingBPLibrary_SetLocation()
 	{
-		struct SwarmingBPLibrary_eventSwarmingSampleFunction_Parms
+		struct SwarmingBPLibrary_eventSetLocation_Parms
 		{
-			float Param;
-			float ReturnValue;
+			TArray<FVector> velArray;
+			TArray<AActor*> actors;
+			float tick;
 		};
 		UObject* Outer=Z_Construct_UClass_USwarmingBPLibrary();
 		static UFunction* ReturnFunction = NULL;
 		if (!ReturnFunction)
 		{
-			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("SwarmingSampleFunction"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04022401, 65535, sizeof(SwarmingBPLibrary_eventSwarmingSampleFunction_Parms));
-			UProperty* NewProp_ReturnValue = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("ReturnValue"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(ReturnValue, SwarmingBPLibrary_eventSwarmingSampleFunction_Parms), 0x0000000000000580);
-			UProperty* NewProp_Param = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("Param"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(Param, SwarmingBPLibrary_eventSwarmingSampleFunction_Parms), 0x0000000000000080);
+			ReturnFunction = new(EC_InternalUseOnlyConstructor, Outer, TEXT("SetLocation"), RF_Public|RF_Transient|RF_Native) UFunction(FObjectInitializer(), NULL, 0x04022401, 65535, sizeof(SwarmingBPLibrary_eventSetLocation_Parms));
+			UProperty* NewProp_tick = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("tick"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(tick, SwarmingBPLibrary_eventSetLocation_Parms), 0x0000000000000080);
+			UProperty* NewProp_actors = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("actors"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(actors, SwarmingBPLibrary_eventSetLocation_Parms), 0x0000000000000080);
+			UProperty* NewProp_actors_Inner = new(EC_InternalUseOnlyConstructor, NewProp_actors, TEXT("actors"), RF_Public|RF_Transient|RF_Native) UObjectProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UClass_AActor_NoRegister());
+			UProperty* NewProp_velArray = new(EC_InternalUseOnlyConstructor, ReturnFunction, TEXT("velArray"), RF_Public|RF_Transient|RF_Native) UArrayProperty(CPP_PROPERTY_BASE(velArray, SwarmingBPLibrary_eventSetLocation_Parms), 0x0000000000000080);
+			UProperty* NewProp_velArray_Inner = new(EC_InternalUseOnlyConstructor, NewProp_velArray, TEXT("velArray"), RF_Public|RF_Transient|RF_Native) UStructProperty(FObjectInitializer(), EC_CppProperty, 0, 0x0000000000000000, Z_Construct_UScriptStruct_FVector());
 			ReturnFunction->Bind();
 			ReturnFunction->StaticLink();
 #if WITH_METADATA
 			UMetaData* MetaData = ReturnFunction->GetOutermost()->GetMetaData();
-			MetaData->SetValue(ReturnFunction, TEXT("Category"), TEXT("SwarmingTesting"));
-			MetaData->SetValue(ReturnFunction, TEXT("DisplayName"), TEXT("Execute Sample function"));
-			MetaData->SetValue(ReturnFunction, TEXT("Keywords"), TEXT("Swarming sample test testing"));
+			MetaData->SetValue(ReturnFunction, TEXT("Category"), TEXT("Insect Swarming"));
+			MetaData->SetValue(ReturnFunction, TEXT("DisplayName"), TEXT("Set Locations"));
+			MetaData->SetValue(ReturnFunction, TEXT("Keywords"), TEXT("Flocking Swarm AI"));
 			MetaData->SetValue(ReturnFunction, TEXT("ModuleRelativePath"), TEXT("Public/SwarmingBPLibrary.h"));
 #endif
 		}
@@ -333,21 +381,23 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_Alignment());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_ApplyBasicSwarming());
+				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_Avoidance());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_Cohesion());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_ConeTrace());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_CreateSwarm());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_GetDistance());
 				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_Separation());
-				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_SwarmingSampleFunction());
+				OuterClass->LinkChild(Z_Construct_UFunction_USwarmingBPLibrary_SetLocation());
 
 				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_Alignment()); // 3906790951
-				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_ApplyBasicSwarming()); // 3806748903
+				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_ApplyBasicSwarming()); // 1026523722
+				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_Avoidance()); // 1751330803
 				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_Cohesion()); // 1577201167
 				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_ConeTrace()); // 2313989100
-				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_CreateSwarm()); // 3851125717
+				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_CreateSwarm()); // 3842179487
 				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_GetDistance()); // 871063803
 				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_Separation()); // 1567090761
-				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_SwarmingSampleFunction()); // 1174842889
+				OuterClass->AddFunctionToFunctionMap(Z_Construct_UFunction_USwarmingBPLibrary_SetLocation()); // 3847941171
 				OuterClass->StaticLink();
 #if WITH_METADATA
 				UMetaData* MetaData = OuterClass->GetOutermost()->GetMetaData();
@@ -370,8 +420,8 @@ void EmptyLinkFunctionForGeneratedCodeSwarming() {}
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), NULL, FName(TEXT("/Script/Swarming")), false, false));
 			ReturnPackage->PackageFlags |= PKG_CompiledIn | 0x00000000;
 			FGuid Guid;
-			Guid.A = 0x3547399B;
-			Guid.B = 0x935513B3;
+			Guid.A = 0x000A1891;
+			Guid.B = 0x55A548A5;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;
 			ReturnPackage->SetGuid(Guid);

@@ -8,10 +8,10 @@
 #include "ObjectBase.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
-class AActor;
 struct FHitResult;
-class UObject;
 struct FVector;
+class AActor;
+class UObject;
 #ifdef SWARMING_SwarmingBPLibrary_generated_h
 #error "SwarmingBPLibrary.generated.h already included, missing '#pragma once' in SwarmingBPLibrary.h"
 #endif
@@ -19,6 +19,13 @@ struct FVector;
 
 #define SwarmPlugGood_Plugins_Swarming_Source_Swarming_Public_SwarmingBPLibrary_h_26_RPC_WRAPPERS \
  \
+	DECLARE_FUNCTION(execAvoidance) \
+	{ \
+		P_GET_STRUCT(FHitResult,Z_Param_hit); \
+		P_FINISH; \
+		*(FVector*)Z_Param__Result=USwarmingBPLibrary::Avoidance(Z_Param_hit); \
+	} \
+ \
 	DECLARE_FUNCTION(execConeTrace) \
 	{ \
 		P_GET_OBJECT(AActor,Z_Param_act); \
@@ -38,32 +45,47 @@ struct FVector;
 		*(float*)Z_Param__Result=USwarmingBPLibrary::GetDistance(Z_Param_act,Z_Param_agent); \
 	} \
  \
+	DECLARE_FUNCTION(execSetLocation) \
+	{ \
+		P_GET_TARRAY(FVector,Z_Param_velArray); \
+		P_GET_TARRAY(AActor*,Z_Param_actors); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_tick); \
+		P_FINISH; \
+		USwarmingBPLibrary::SetLocation(Z_Param_velArray,Z_Param_actors,Z_Param_tick); \
+	} \
+ \
 	DECLARE_FUNCTION(execCreateSwarm) \
 	{ \
 		P_GET_OBJECT(UClass,Z_Param_agentClass); \
 		P_GET_UBOOL(Z_Param_canFly); \
+		P_GET_TARRAY_REF(AActor*,Z_Param_Out_swarmArray); \
+		P_GET_TARRAY_REF(FVector,Z_Param_Out_velocityArray); \
 		P_GET_PROPERTY(UIntProperty,Z_Param_swarmSize); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_minMaxX); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_minMaxY); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_maxZ); \
 		P_FINISH; \
-		*(TArray<AActor*>*)Z_Param__Result=USwarmingBPLibrary::CreateSwarm(Z_Param_agentClass,Z_Param_canFly,Z_Param_swarmSize,Z_Param_minMaxX,Z_Param_minMaxY,Z_Param_maxZ); \
+		USwarmingBPLibrary::CreateSwarm(Z_Param_agentClass,Z_Param_canFly,Z_Param_Out_swarmArray,Z_Param_Out_velocityArray,Z_Param_swarmSize,Z_Param_minMaxX,Z_Param_minMaxY,Z_Param_maxZ); \
 	} \
  \
 	DECLARE_FUNCTION(execApplyBasicSwarming) \
 	{ \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_EventTick); \
 		P_GET_TARRAY(AActor*,Z_Param_swarmArray); \
+		P_GET_TARRAY(FVector,Z_Param_velocityArray); \
 		P_GET_UBOOL(Z_Param_canFly); \
-		P_GET_TARRAY_REF(FVector,Z_Param_Out_velocityArray); \
+		P_GET_TARRAY_REF(AActor*,Z_Param_Out_outActors); \
+		P_GET_TARRAY_REF(FVector,Z_Param_Out_outVelocities); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_separationWeight); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_alignmentWeight); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_cohesionWeight); \
 		P_GET_UBOOL(Z_Param_separationOn); \
 		P_GET_UBOOL(Z_Param_alignmentOn); \
 		P_GET_UBOOL(Z_Param_cohesionOn); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_maxAgentDistance); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_speed); \
 		P_FINISH; \
-		USwarmingBPLibrary::ApplyBasicSwarming(Z_Param_EventTick,Z_Param_swarmArray,Z_Param_canFly,Z_Param_Out_velocityArray,Z_Param_separationWeight,Z_Param_alignmentWeight,Z_Param_cohesionWeight,Z_Param_separationOn,Z_Param_alignmentOn,Z_Param_cohesionOn); \
+		USwarmingBPLibrary::ApplyBasicSwarming(Z_Param_EventTick,Z_Param_swarmArray,Z_Param_velocityArray,Z_Param_canFly,Z_Param_Out_outActors,Z_Param_Out_outVelocities,Z_Param_separationWeight,Z_Param_alignmentWeight,Z_Param_cohesionWeight,Z_Param_separationOn,Z_Param_alignmentOn,Z_Param_cohesionOn,Z_Param_maxAgentDistance,Z_Param_speed); \
 	} \
  \
 	DECLARE_FUNCTION(execCohesion) \
@@ -88,18 +110,18 @@ struct FVector;
 		P_GET_OBJECT(AActor,Z_Param_agent); \
 		P_FINISH; \
 		*(FVector*)Z_Param__Result=USwarmingBPLibrary::Separation(Z_Param_act,Z_Param_agent); \
-	} \
- \
-	DECLARE_FUNCTION(execSwarmingSampleFunction) \
-	{ \
-		P_GET_PROPERTY(UFloatProperty,Z_Param_Param); \
-		P_FINISH; \
-		*(float*)Z_Param__Result=USwarmingBPLibrary::SwarmingSampleFunction(Z_Param_Param); \
 	}
 
 
 #define SwarmPlugGood_Plugins_Swarming_Source_Swarming_Public_SwarmingBPLibrary_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
  \
+	DECLARE_FUNCTION(execAvoidance) \
+	{ \
+		P_GET_STRUCT(FHitResult,Z_Param_hit); \
+		P_FINISH; \
+		*(FVector*)Z_Param__Result=USwarmingBPLibrary::Avoidance(Z_Param_hit); \
+	} \
+ \
 	DECLARE_FUNCTION(execConeTrace) \
 	{ \
 		P_GET_OBJECT(AActor,Z_Param_act); \
@@ -119,32 +141,47 @@ struct FVector;
 		*(float*)Z_Param__Result=USwarmingBPLibrary::GetDistance(Z_Param_act,Z_Param_agent); \
 	} \
  \
+	DECLARE_FUNCTION(execSetLocation) \
+	{ \
+		P_GET_TARRAY(FVector,Z_Param_velArray); \
+		P_GET_TARRAY(AActor*,Z_Param_actors); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_tick); \
+		P_FINISH; \
+		USwarmingBPLibrary::SetLocation(Z_Param_velArray,Z_Param_actors,Z_Param_tick); \
+	} \
+ \
 	DECLARE_FUNCTION(execCreateSwarm) \
 	{ \
 		P_GET_OBJECT(UClass,Z_Param_agentClass); \
 		P_GET_UBOOL(Z_Param_canFly); \
+		P_GET_TARRAY_REF(AActor*,Z_Param_Out_swarmArray); \
+		P_GET_TARRAY_REF(FVector,Z_Param_Out_velocityArray); \
 		P_GET_PROPERTY(UIntProperty,Z_Param_swarmSize); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_minMaxX); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_minMaxY); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_maxZ); \
 		P_FINISH; \
-		*(TArray<AActor*>*)Z_Param__Result=USwarmingBPLibrary::CreateSwarm(Z_Param_agentClass,Z_Param_canFly,Z_Param_swarmSize,Z_Param_minMaxX,Z_Param_minMaxY,Z_Param_maxZ); \
+		USwarmingBPLibrary::CreateSwarm(Z_Param_agentClass,Z_Param_canFly,Z_Param_Out_swarmArray,Z_Param_Out_velocityArray,Z_Param_swarmSize,Z_Param_minMaxX,Z_Param_minMaxY,Z_Param_maxZ); \
 	} \
  \
 	DECLARE_FUNCTION(execApplyBasicSwarming) \
 	{ \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_EventTick); \
 		P_GET_TARRAY(AActor*,Z_Param_swarmArray); \
+		P_GET_TARRAY(FVector,Z_Param_velocityArray); \
 		P_GET_UBOOL(Z_Param_canFly); \
-		P_GET_TARRAY_REF(FVector,Z_Param_Out_velocityArray); \
+		P_GET_TARRAY_REF(AActor*,Z_Param_Out_outActors); \
+		P_GET_TARRAY_REF(FVector,Z_Param_Out_outVelocities); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_separationWeight); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_alignmentWeight); \
 		P_GET_PROPERTY(UFloatProperty,Z_Param_cohesionWeight); \
 		P_GET_UBOOL(Z_Param_separationOn); \
 		P_GET_UBOOL(Z_Param_alignmentOn); \
 		P_GET_UBOOL(Z_Param_cohesionOn); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_maxAgentDistance); \
+		P_GET_PROPERTY(UFloatProperty,Z_Param_speed); \
 		P_FINISH; \
-		USwarmingBPLibrary::ApplyBasicSwarming(Z_Param_EventTick,Z_Param_swarmArray,Z_Param_canFly,Z_Param_Out_velocityArray,Z_Param_separationWeight,Z_Param_alignmentWeight,Z_Param_cohesionWeight,Z_Param_separationOn,Z_Param_alignmentOn,Z_Param_cohesionOn); \
+		USwarmingBPLibrary::ApplyBasicSwarming(Z_Param_EventTick,Z_Param_swarmArray,Z_Param_velocityArray,Z_Param_canFly,Z_Param_Out_outActors,Z_Param_Out_outVelocities,Z_Param_separationWeight,Z_Param_alignmentWeight,Z_Param_cohesionWeight,Z_Param_separationOn,Z_Param_alignmentOn,Z_Param_cohesionOn,Z_Param_maxAgentDistance,Z_Param_speed); \
 	} \
  \
 	DECLARE_FUNCTION(execCohesion) \
@@ -169,13 +206,6 @@ struct FVector;
 		P_GET_OBJECT(AActor,Z_Param_agent); \
 		P_FINISH; \
 		*(FVector*)Z_Param__Result=USwarmingBPLibrary::Separation(Z_Param_act,Z_Param_agent); \
-	} \
- \
-	DECLARE_FUNCTION(execSwarmingSampleFunction) \
-	{ \
-		P_GET_PROPERTY(UFloatProperty,Z_Param_Param); \
-		P_FINISH; \
-		*(float*)Z_Param__Result=USwarmingBPLibrary::SwarmingSampleFunction(Z_Param_Param); \
 	}
 
 

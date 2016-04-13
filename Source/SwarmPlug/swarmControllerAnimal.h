@@ -30,8 +30,7 @@ public:
 	///go to destination
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		void AnimalApply(float tick);
-	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
-		void StopToEat(float tick, AActor* food, AswarmActor* act);
+	
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector RunFrom(ACharacter* AC, AswarmActor* act);
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
@@ -60,8 +59,7 @@ public:
 	
 		TArray<AswarmActor*>swarmBehaviour;
 	Behaviours* behave;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Food)
-		AActor* food;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Target)
 		AActor *target;
 	FVector targetLocation;

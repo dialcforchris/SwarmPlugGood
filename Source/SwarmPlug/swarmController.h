@@ -63,7 +63,7 @@ public:
 		float boundaryFix = 500;
 	//The Actor Class used in the swarm
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
-		TSubclassOf<AActor> ActorClass;
+		TSubclassOf<AswarmActor> ActorClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmActor)
 		UClass* AgentClass;
 	//Swarm Actor
@@ -92,14 +92,15 @@ public:
 		void AddRemoveAgents();
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FHitResult ConeTracer(AswarmActor* act, ECollisionChannel channel);
-	//UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ConeTrace)
+		float traceHeight =0;
 	int32 agents;
 		FHitResult hit;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ConeTrace)
 		bool renderConeTrace = true;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ConeTrace)
 		float traceLength = 200;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SwarmFunctions)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ConeTrace)
 		float radius;
 	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector Collision(FHitResult hit);

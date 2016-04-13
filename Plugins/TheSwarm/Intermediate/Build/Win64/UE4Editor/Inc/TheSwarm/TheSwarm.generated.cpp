@@ -39,7 +39,7 @@ static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_Behaviours(Behaviours_St
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManager::StaticClass(),"GetDistance",(Native)&ATheSwarmManager::execGetDistance);
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManager::StaticClass(),"separation",(Native)&ATheSwarmManager::execseparation);
 	}
-	IMPLEMENT_CLASS(ATheSwarmManager, 3649351880);
+	IMPLEMENT_CLASS(ATheSwarmManager, 1392445557);
 	void ATheSwarmManagerAnimal::StaticRegisterNativesATheSwarmManagerAnimal()
 	{
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManagerAnimal::StaticClass(),"AnimalApply",(Native)&ATheSwarmManagerAnimal::execAnimalApply);
@@ -48,7 +48,7 @@ static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_Behaviours(Behaviours_St
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManagerAnimal::StaticClass(),"RunFrom",(Native)&ATheSwarmManagerAnimal::execRunFrom);
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManagerAnimal::StaticClass(),"StateManager",(Native)&ATheSwarmManagerAnimal::execStateManager);
 	}
-	IMPLEMENT_CLASS(ATheSwarmManagerAnimal, 2494653288);
+	IMPLEMENT_CLASS(ATheSwarmManagerAnimal, 4289633646);
 #if USE_COMPILED_IN_NATIVES
 // Cross Module References
 	COREUOBJECT_API class UClass* Z_Construct_UClass_UObject_NoRegister();
@@ -457,13 +457,13 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 				UProperty* NewProp_traceLength = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("traceLength"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(traceLength, ATheSwarmManager), 0x0000000000000005);
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(renderConeTrace, ATheSwarmManager, bool);
 				UProperty* NewProp_renderConeTrace = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("renderConeTrace"), RF_Public|RF_Transient|RF_Native) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(renderConeTrace, ATheSwarmManager), 0x0000000000000005, CPP_BOOL_PROPERTY_BITMASK(renderConeTrace, ATheSwarmManager), sizeof(bool), true);
-				UProperty* NewProp_totalV = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("totalV"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(totalV, ATheSwarmManager), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
-				UProperty* NewProp_Bound = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Bound"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(Bound, ATheSwarmManager), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
-				UProperty* NewProp_coh = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("coh"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(coh, ATheSwarmManager), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
-				UProperty* NewProp_ali = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ali"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(ali, ATheSwarmManager), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
-				UProperty* NewProp_sep = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("sep"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(sep, ATheSwarmManager), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
+				UProperty* NewProp_totalV = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("totalV"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(totalV, ATheSwarmManager), 0x0000000000000004, Z_Construct_UScriptStruct_FVector());
+				UProperty* NewProp_Bound = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("Bound"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(Bound, ATheSwarmManager), 0x0000000000000004, Z_Construct_UScriptStruct_FVector());
+				UProperty* NewProp_coh = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("coh"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(coh, ATheSwarmManager), 0x0000000000000004, Z_Construct_UScriptStruct_FVector());
+				UProperty* NewProp_ali = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ali"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(ali, ATheSwarmManager), 0x0000000000000004, Z_Construct_UScriptStruct_FVector());
+				UProperty* NewProp_sep = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("sep"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(sep, ATheSwarmManager), 0x0000000000000004, Z_Construct_UScriptStruct_FVector());
 				UProperty* NewProp_AgentClass = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("AgentClass"), RF_Public|RF_Transient|RF_Native) UClassProperty(CPP_PROPERTY_BASE(AgentClass, ATheSwarmManager), 0x0000000000000005, Z_Construct_UClass_UObject_NoRegister());
-				UProperty* NewProp_ActorClass = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("ActorClass"), RF_Public|RF_Transient|RF_Native) UClassProperty(CPP_PROPERTY_BASE(ActorClass, ATheSwarmManager), 0x0004000000000005, Z_Construct_UClass_AActor_NoRegister());
+				UProperty* NewProp_TheSwarmActorClass = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("TheSwarmActorClass"), RF_Public|RF_Transient|RF_Native) UClassProperty(CPP_PROPERTY_BASE(TheSwarmActorClass, ATheSwarmManager), 0x0004000000000005, Z_Construct_UClass_ATheSwarmActor_NoRegister());
 				UProperty* NewProp_boundaryFix = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("boundaryFix"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(boundaryFix, ATheSwarmManager), 0x0000000000000005);
 				UProperty* NewProp_MinZ = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("MinZ"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(MinZ, ATheSwarmManager), 0x0000000000000005);
 				UProperty* NewProp_MaxZ = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("MaxZ"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(MaxZ, ATheSwarmManager), 0x0000000000000005);
@@ -512,21 +512,22 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(NewProp_traceLength, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
 				MetaData->SetValue(NewProp_renderConeTrace, TEXT("Category"), TEXT("SwarmFunctions"));
 				MetaData->SetValue(NewProp_renderConeTrace, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_totalV, TEXT("Category"), TEXT("Debug"));
+				MetaData->SetValue(NewProp_totalV, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_totalV, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_Bound, TEXT("Category"), TEXT("Debug"));
+				MetaData->SetValue(NewProp_Bound, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_Bound, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_coh, TEXT("Category"), TEXT("Debug"));
+				MetaData->SetValue(NewProp_coh, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_coh, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_ali, TEXT("Category"), TEXT("Debug"));
+				MetaData->SetValue(NewProp_ali, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_ali, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_sep, TEXT("Category"), TEXT("Debug"));
+				MetaData->SetValue(NewProp_sep, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_sep, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
 				MetaData->SetValue(NewProp_AgentClass, TEXT("Category"), TEXT("SwarmActor"));
 				MetaData->SetValue(NewProp_AgentClass, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_ActorClass, TEXT("Category"), TEXT("SwarmActor"));
-				MetaData->SetValue(NewProp_ActorClass, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_ActorClass, TEXT("ToolTip"), TEXT("The Actor Class used in the swarm"));
+				MetaData->SetValue(NewProp_AgentClass, TEXT("ToolTip"), TEXT("The class for the swarm"));
+				MetaData->SetValue(NewProp_TheSwarmActorClass, TEXT("Category"), TEXT("SwarmActor"));
+				MetaData->SetValue(NewProp_TheSwarmActorClass, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
+				MetaData->SetValue(NewProp_TheSwarmActorClass, TEXT("ToolTip"), TEXT("The TheSwarmActor Class needed to spawn the swarm (should always be inherited from TheSwarmActor)"));
 				MetaData->SetValue(NewProp_boundaryFix, TEXT("Category"), TEXT("Boundaries"));
 				MetaData->SetValue(NewProp_boundaryFix, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
 				MetaData->SetValue(NewProp_MinZ, TEXT("Category"), TEXT("Boundaries"));
@@ -557,7 +558,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(NewProp_maxDist, TEXT("ToolTip"), TEXT("max agent distance"));
 				MetaData->SetValue(NewProp_swarmSize, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_swarmSize, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
-				MetaData->SetValue(NewProp_swarmSize, TEXT("ToolTip"), TEXT("the size of the swarm"));
+				MetaData->SetValue(NewProp_swarmSize, TEXT("ToolTip"), TEXT("the size of the swarm (should always be greater than 2)"));
 				MetaData->SetValue(NewProp_swarmArray, TEXT("Category"), TEXT("TheSwarmManager"));
 				MetaData->SetValue(NewProp_swarmArray, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManager.h"));
 				MetaData->SetValue(NewProp_swarmArray, TEXT("ToolTip"), TEXT("swarm array"));
@@ -720,7 +721,6 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
 				UProperty* NewProp_playerAvoidance = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("playerAvoidance"), RF_Public|RF_Transient|RF_Native) UFloatProperty(CPP_PROPERTY_BASE(playerAvoidance, ATheSwarmManagerAnimal), 0x0000000000000005);
 				UProperty* NewProp_target = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("target"), RF_Public|RF_Transient|RF_Native) UObjectProperty(CPP_PROPERTY_BASE(target, ATheSwarmManagerAnimal), 0x0000000000000005, Z_Construct_UClass_AActor_NoRegister());
-				UProperty* NewProp_food = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("food"), RF_Public|RF_Transient|RF_Native) UObjectProperty(CPP_PROPERTY_BASE(food, ATheSwarmManagerAnimal), 0x0000000000000005, Z_Construct_UClass_AActor_NoRegister());
 				UProperty* NewProp_destination = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("destination"), RF_Public|RF_Transient|RF_Native) UStructProperty(CPP_PROPERTY_BASE(destination, ATheSwarmManagerAnimal), 0x0000000000000005, Z_Construct_UScriptStruct_FVector());
 				CPP_BOOL_PROPERTY_BITMASK_STRUCT(scatterOrRetreat, ATheSwarmManagerAnimal, bool);
 				UProperty* NewProp_scatterOrRetreat = new(EC_InternalUseOnlyConstructor, OuterClass, TEXT("scatterOrRetreat"), RF_Public|RF_Transient|RF_Native) UBoolProperty(FObjectInitializer(), EC_CppProperty, CPP_BOOL_PROPERTY_OFFSET(scatterOrRetreat, ATheSwarmManagerAnimal), 0x0000000000000005, CPP_BOOL_PROPERTY_BITMASK(scatterOrRetreat, ATheSwarmManagerAnimal), sizeof(bool), true);
@@ -743,8 +743,6 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 				MetaData->SetValue(NewProp_playerAvoidance, TEXT("ToolTip"), TEXT("player avoidance multiplier"));
 				MetaData->SetValue(NewProp_target, TEXT("Category"), TEXT("Target"));
 				MetaData->SetValue(NewProp_target, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManagerAnimal.h"));
-				MetaData->SetValue(NewProp_food, TEXT("Category"), TEXT("Food"));
-				MetaData->SetValue(NewProp_food, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManagerAnimal.h"));
 				MetaData->SetValue(NewProp_destination, TEXT("Category"), TEXT("AnimalBehaviour"));
 				MetaData->SetValue(NewProp_destination, TEXT("ModuleRelativePath"), TEXT("Classes/TheSwarmManagerAnimal.h"));
 				MetaData->SetValue(NewProp_scatterOrRetreat, TEXT("Category"), TEXT("AnimalBehaviour"));
@@ -771,7 +769,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), NULL, FName(TEXT("/Script/TheSwarm")), false, false));
 			ReturnPackage->PackageFlags |= PKG_CompiledIn | 0x00000000;
 			FGuid Guid;
-			Guid.A = 0xDB254875;
+			Guid.A = 0xC1FF3488;
 			Guid.B = 0x972A9D36;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;

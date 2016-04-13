@@ -25,14 +25,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector velocity;
 	//Adjust Rotation
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float skRotAdj;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		//float skRotAdj;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMesh* mesh;
 	enum Behaviours behave;
-	UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
+	//UFUNCTION(BlueprintCallable, Category = SwarmFunctions)
 		FVector LineTracer();
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UClass* swarmClass;
 	AActor* actor;
 	void SpawnActors(UClass* swarmclass);

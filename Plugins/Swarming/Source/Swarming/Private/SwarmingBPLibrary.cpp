@@ -7,72 +7,87 @@ USwarmingBPLibrary::USwarmingBPLibrary(const FObjectInitializer& ObjectInitializ
 
 }
 
-float USwarmingBPLibrary::SwarmingSampleFunction(float Param)
-{
-	return -1;
-}
-
 FVector USwarmingBPLibrary::Separation(AActor* act, AActor* agent)
 {
-	return act->GetActorLocation() - agent->GetActorLocation();
+	FVector sep = FVector::ZeroVector;
+	sep = sep - (agent->GetActorLocation() - act->GetActorLocation());
+	return sep;
 }
 
 FVector USwarmingBPLibrary::Alignment(AActor* act, AActor* agent)
 {
-	return agent->GetVelocity();
+	FVector ali = FVector::ZeroVector;
+	ali = ali + agent->GetVelocity();
+	return ((ali - act->GetVelocity()) / 100).GetClampedToMaxSize(100);
 }
+
 FVector USwarmingBPLibrary::Cohesion(AActor* act, AActor* agent)
 {
-	return agent->GetActorLocation();
+	FVector coh = FVector::ZeroVector;
+	coh = (coh + agent->GetActorLocation());
+
+
+	return coh;
 }
-void USwarmingBPLibrary::ApplyBasicSwarming(float EventTick, TArray<AActor*> swarmArray, bool canFly, 
-	TArray<FVector>& velocityArray,	float separationWeight, float alignmentWeight, float cohesionWeight,
-	bool separationOn, bool alignmentOn, bool cohesionOn)
+
+void USwarmingBPLibrary::ApplyBasicSwarming(float EventTick, TArray<AActor*> swarmArray, TArray<FVector> velocityArray, bool canFly,
+	TArray<AActor*>&outActors, TArray<FVector>&outVelocities, float separationWeight, float alignmentWeight, float cohesionWeight,
+	bool separationOn, bool alignmentOn, bool cohesionOn, float maxAgentDistance, float speed)
 {
-	//TArray<FVector*>velocityArray;
-	if (velocityArray.Num() < swarmArray.Num())
+	TArray<FVector> velArray = velocityArray;
+	TArray<AActor*>acts = swarmArray;
+
+
+
+
+
+	//TArray<FVector>vel = velocityArray;
+	for (int i = 0; i < acts.Num(); i++)
 	{
-		for (int i = 0; i < swarmArray.Num(); i++)
-		{
-			FVector* velocity = new FVector();
-			(*velocity) = swarmArray[i]->GetVelocity();
-			velocityArray.Add((*velocity));
-		}
-	}
-	for (int i = 0; i < swarmArray.Num(); i++)
-	{
-		
+
 		FVector alignmentV = FVector().ZeroVector;
 		FVector cohesionV = FVector().ZeroVector;
 		FVector separationV = FVector().ZeroVector;
-		FVector boundV = FVector().ZeroVector;
 		FVector traceV = FVector().ZeroVector;
 		FVector totalV = FVector().ZeroVector;
-		
+		velocityArray[i] = swarmArray[i]->GetVelocity();
 
 		float dist;
-		float speed = 1;
+
 		int32 agents = 0;
+
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
-			if (swarmArray[i] != swarmArray[j])
+			if (i != j)
 			{
 				dist = GetDistance(swarmArray[i], swarmArray[j]);
-				if (dist <1000)
+				if (dist <maxAgentDistance)
 				{
 					if (separationOn)
-					separationV = separationV + (Separation(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-300,300);
+						separationV = separationV + Separation(swarmArray[i], swarmArray[j]).GetClampedToSize(-300, 300);
 					if (alignmentOn)
-					alignmentV = (alignmentV + Alignment(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-100,100);
+						alignmentV += Alignment(swarmArray[i], swarmArray[j]).GetClampedToSize(-100, 100);
+					//alignmentV = alignmentV + Alignment(swarmArray[i], swarmArray[j]);// / 100);// .GetClampedToSize(-100, 100);
 					if (cohesionOn)
-					cohesionV = cohesionV + (Cohesion(swarmArray[i], swarmArray[j])/100).GetClampedToSize(-100,100);
+						cohesionV += Cohesion(swarmArray[i], swarmArray[j]).GetClampedToSize(-100, 100);
+					agents++;
 				}
+
 			}
 		}
-		cohesionV = (cohesionV - swarmArray[i]->GetActorLocation())/swarmArray.Num()-1;
-		//alignmentV = alignmentV / swarmArray.Num() - 1;
-		totalV = (separationV*separationWeight) + (alignmentV*alignmentWeight)
-			+ (cohesionV*cohesionWeight) + swarmArray[i]->GetVelocity();
+		if (agents <= 2)
+		{
+			maxAgentDistance += 100;
+		}
+
+		traceV = Avoidance(ConeTrace(swarmArray[i]));
+		cohesionV = ((cohesionV / swarmArray.Num() - 1)* cohesionWeight);// .GetClampedToSize(-200, 200);
+		//cohesionV = cohesionV * cohesionWeight;// .GetClampedToSize(-100, 100);
+		alignmentV = ((alignmentV / swarmArray.Num() - 1)*alignmentWeight);// .GetClampedToSize(-200, 200);
+		//alignmentV = alignmentV * alignmentWeight;// .GetClampedToSize(-100, 100);
+		separationV = separationV*separationWeight;// .GetClampedToSize(-300, 300);
+		totalV = traceV + separationV + cohesionV + alignmentV + acts[i]->GetVelocity();
+
 
 		if (!canFly)
 		{
@@ -80,33 +95,40 @@ void USwarmingBPLibrary::ApplyBasicSwarming(float EventTick, TArray<AActor*> swa
 		}
 		velocityArray[i] = (velocityArray[i] + totalV) * speed;
 
-		if (velocityArray[i].Size() > 1)
-		{
-			velocityArray[i] -= velocityArray[i] / 100;
-		}
-		swarmArray[i]->SetActorLocation(swarmArray[i]->GetActorLocation() + velocityArray[i] * EventTick);
-		
-		velocityArray[i] = velocityArray[i].GetClampedToSize(0, 360);
-		swarmArray[i]->SetActorRotation(velocityArray[i].Rotation());
+
+		outActors = swarmArray;
+		outVelocities = velocityArray;
+	}
+}
+void USwarmingBPLibrary::SetLocation(TArray<FVector>velArray, TArray<AActor*>actors, float tick)
+{
+	for (int i = 0; i < actors.Num(); i++)
+	{
+		actors[i]->SetActorLocation(actors[i]->GetActorLocation() + velArray[i] * tick);
+		velArray[i] = velArray[i].GetClampedToSize(0, 360);
+		actors[i]->SetActorRotation(velArray[i].Rotation());
+		velArray[i] = actors[i]->GetVelocity();
 	}
 }
 float USwarmingBPLibrary::GetDistance(AActor* act, AActor* agent)
 {
 	return FVector::Dist(act->GetActorLocation(), agent->GetActorLocation());
 }
-TArray<AActor*> USwarmingBPLibrary::CreateSwarm(UClass* agentClass, bool canFly, int32 swarmSize, float minMaxX,
-	float minMaxY, float maxZ)
+
+void USwarmingBPLibrary::CreateSwarm(UClass* agentClass, bool canFly, TArray<AActor*>& swarmArray,
+	TArray<FVector>& velocityArray, int32 swarmSize, float minMaxX, float minMaxY, float maxZ)
 {
-	TArray<AActor*> swarmArray;
+
+	FVector velocity;
 	TObjectIterator<ACameraActor> It;
 	AActor* SwAct;
 	UWorld* world = It->GetWorld();
 
 	if (world)
 	{
-		
+
 		FRotator rot = FRotator().ZeroRotator;
-		for (int i = 0; i < swarmSize; ++i)
+		for (int i = 0; i < swarmSize; i++)
 		{
 			//new random location for each object
 			float x = FMath().RandRange(-minMaxX, minMaxX);
@@ -126,53 +148,60 @@ TArray<AActor*> USwarmingBPLibrary::CreateSwarm(UClass* agentClass, bool canFly,
 
 			//spawn actor
 			SwAct = world->SpawnActor<AActor>(agentClass, FVector(x, y, z), rot, SpawnParams);
+			SwAct->SetTickGroup(ETickingGroup::TG_PostPhysics);
+			velocity = FVector::ZeroVector;
+			velocityArray.Push(velocity);
 			//adds actor to swarm array
 			swarmArray.Push(SwAct);
 
 		}
 	}
-	return swarmArray;
 }
-FHitResult USwarmingBPLibrary::ConeTrace(AActor* act,float radius,float traceLength, bool renderConeTrace, bool canFly)
+FHitResult USwarmingBPLibrary::ConeTrace(AActor* act, float radius, float traceLength, bool renderConeTrace, bool canFly)
 {
 	FHitResult hit;
-	
-	
 
-		FVector pos;
-		FRotator rot;
-		act->GetActorEyesViewPoint(pos, rot);
 
-		ECollisionChannel trace = ECollisionChannel::ECC_MAX;
-		const FName TraceTag("Trace");
-		FCollisionQueryParams params;
-		if (renderConeTrace)
-		{
 
-			act->GetWorld()->DebugDrawTraceTag = TraceTag;
-			params.TraceTag = TraceTag;
-		}
+	FVector pos;
+	FRotator rot;
+	act->GetActorEyesViewPoint(pos, rot);
 
-		params.AddIgnoredActor(act);
-		
-		radius = 0;
-		pos.Z -= 10;
-		if (!canFly)
-		{
-			rot.Pitch = 0;
-			rot.Roll = 0;
-			radius = 0.5;
-		}
-		else
-		{
-			radius = 1;
-		}
-		FVector randomCone = FMath::VRandCone(rot.Vector(), radius);
-		FVector end = pos + (randomCone * traceLength);
+	ECollisionChannel trace = ECollisionChannel::ECC_WorldDynamic;
+	const FName TraceTag("Trace");
+	FCollisionQueryParams params;
+	if (renderConeTrace)
+	{
 
-		act->GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+		act->GetWorld()->DebugDrawTraceTag = TraceTag;
+		params.TraceTag = TraceTag;
+	}
 
-	
+	params.AddIgnoredActor(act);
+
+	radius = 0;
+	pos.Z -= 10;
+	if (!canFly)
+	{
+		rot.Pitch = 0;
+		rot.Roll = 0;
+		radius = 0.5;
+	}
+	else
+	{
+		radius = 1;
+	}
+	FVector randomCone = FMath::VRandCone(rot.Vector(), radius);
+	FVector end = pos + (randomCone * traceLength);
+
+	act->GetWorld()->LineTraceSingleByChannel(hit, pos, end, trace, params);
+
+
 
 	return hit;
+}
+
+FVector USwarmingBPLibrary::Avoidance(FHitResult hit)
+{
+	return -(hit.Location / 100);
 }

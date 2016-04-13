@@ -22,12 +22,30 @@ void ATheSwarmActor::BeginPlay()
 void ATheSwarmActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	SetActorLocation(GetActorLocation() + velocity *  DeltaTime);
+
+	UCapsuleComponent* move = NULL;
+	TArray<UCapsuleComponent*>comps;
+	actor->GetComponents(comps);
+	if (comps.Num() > 0)
+	{
+		move = comps[0];
+	}
+
+	//adjust Z axis for allowing gravity
+	FVector gravityFudge = FVector(GetActorLocation().X, GetActorLocation().Y, actor->GetActorLocation().Z);
+	SetActorLocation(gravityFudge + velocity *  DeltaTime);
+
+	//moves swarm actor and child actor
 	actor->SetActorLocation(GetActorLocation());
 	velocity = velocity.GetClampedToSize(0, 360);
 	SetActorRotation(velocity.Rotation());
 	actor->SetActorRotation(GetActorRotation());
 	
+	//allows animation assets to be used
+	if (move != NULL)
+	{
+		move->SetAllPhysicsLinearVelocity(velocity);
+	}
 
 }
 
@@ -38,6 +56,6 @@ void ATheSwarmActor::SpawnActors(UClass* cl)
 	if (world)
 	{
 		actor = world->SpawnActor<AActor>(cl, GetActorLocation(), GetActorRotation());
-		
+		actor->AttachRootComponentToActor(this);
 	}
 }

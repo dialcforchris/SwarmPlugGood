@@ -9,9 +9,7 @@ AswarmActor::AswarmActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	SetTickGroup(ETickingGroup::TG_PostPhysics);
-	
-
-	
+		
 	// enum Behaviours behave; 
 	behave = Behaviours::IDLE;
 }
@@ -27,14 +25,31 @@ void AswarmActor::BeginPlay()
 // Called every frame
 void AswarmActor::Tick(float DeltaTime)
 {
+	
 	Super::Tick(DeltaTime);
-	SetActorLocation(GetActorLocation() + velocity *  DeltaTime);
+	UCapsuleComponent* move = NULL;
+	TArray<UCapsuleComponent*>comps;
+	actor->GetComponents(comps);
+	if (comps.Num() > 0)
+	{
+		move = comps[0];
+	}
+
+	//adjust Z axis for allowing gravity
+	FVector gravityFudge = FVector(GetActorLocation().X, GetActorLocation().Y, actor->GetActorLocation().Z);
+	SetActorLocation(gravityFudge + velocity *  DeltaTime);
+	
 	actor->SetActorLocation(GetActorLocation());
-	//SetActorLocation(GetActorLocation() + velocity * DeltaTime);
 	velocity = velocity.GetClampedToSize(0, 360);
 	SetActorRotation(velocity.Rotation());
 	actor->SetActorRotation(GetActorRotation());
-	///LineTracer();
+	
+	
+	if (move != NULL)
+	{
+		move->SetAllPhysicsLinearVelocity(velocity);
+	}
+	
 
 }
 
@@ -82,6 +97,6 @@ void AswarmActor::SpawnActors(UClass* cl)
 	if (world)
 	{
 		actor = world->SpawnActor<AActor>(cl,GetActorLocation(),GetActorRotation());
-		//actor->AttachRootComponentToActor(this);
+		actor->AttachRootComponentTo(this->GetRootComponent());
 	}
 }

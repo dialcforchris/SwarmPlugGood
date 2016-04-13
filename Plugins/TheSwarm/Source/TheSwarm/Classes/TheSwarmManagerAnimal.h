@@ -56,8 +56,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AnimalBehaviour)
 		FVector destination;
 	Behaviours* behave = new Behaviours;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Food)
-		AActor* food;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Target)
 		AActor *target;
 	FVector targetLocation;

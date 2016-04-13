@@ -10,8 +10,7 @@ AswarmController::AswarmController()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -156,6 +155,7 @@ FHitResult AswarmController::ConeTracer(AswarmActor* act,ECollisionChannel chann
 		params.AddIgnoredActor(act->actor);
 		radius = 0;
 		pos.Z -= 10;
+		pos.Z += traceHeight;
 		if (!canFly)
 		{
 			rot.Pitch = 0;

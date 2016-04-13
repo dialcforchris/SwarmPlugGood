@@ -52,7 +52,7 @@ void ATheSwarmManager::CreateSwarm()
 
 
 			//spawn actor
-			SwAct = GetWorld()->SpawnActor<ATheSwarmActor>(ActorClass, FVector(x, y, z), rot, SpawnParams);
+			SwAct = GetWorld()->SpawnActor<ATheSwarmActor>(TheSwarmActorClass, FVector(x, y, z), rot, SpawnParams);
 			SwAct->swarmClass = AgentClass;
 			SwAct->SpawnActors(AgentClass);
 
@@ -89,11 +89,9 @@ void ATheSwarmManager::ApplyBasicSwarming(float tick)
 
 				{
 					//get results
-					if (SeparationOn)
+					
 						separationV += separation(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-300, 300);
-					if (AlignmentOn)
 						alignmentV += alignment(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
-					if (CohesionOn)
 						cohesionV += cohesion(swarmArray[i], dist, swarmArray[j]).GetClampedToSize(-100, 100);
 
 				}
@@ -102,8 +100,19 @@ void ATheSwarmManager::ApplyBasicSwarming(float tick)
 		}
 		if (BoundariesOn)
 			boundV = Boundaries(swarmArray[i]);
-		traceV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_WorldStatic));
-
+		traceV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_Camera));
+		if (!SeparationOn)
+		{
+			scaleSep = 0;
+		}
+		if (!CohesionOn)
+		{
+			scaleCoh = 0;
+		}
+		if (!AlignmentOn)
+		{
+			scaleAli = 0;
+		}
 		//scale the returned values
 		separationV = separationV *scaleSep;
 		cohesionV = ((cohesionV / swarmArray.Num() - 1) *scaleCoh);
@@ -195,7 +204,7 @@ void ATheSwarmManager::AddRemoveAgents()
 
 
 		//spawn actor
-		SwAct = GetWorld()->SpawnActor<ATheSwarmActor>(ActorClass, FVector(x, y, z), rot, SpawnParams);
+		SwAct = GetWorld()->SpawnActor<ATheSwarmActor>(TheSwarmActorClass, FVector(x, y, z), rot, SpawnParams);
 		SwAct->swarmClass = AgentClass;
 		SwAct->SpawnActors(AgentClass);
 

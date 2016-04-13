@@ -11,11 +11,11 @@ AswarmControllerAnimal::AswarmControllerAnimal()
 
 	//set variables to sensible amounts
 	playerDistance = 100;
-	traceLength = 50;
+	traceLength = 200;
 	speed = 0.5;
 	scaleSep = 2;
 	playerAvoidance = 10;
-	maxDist = 700;
+	maxDist = 100;
 }
 
 void AswarmControllerAnimal::BeginPlay()
@@ -32,15 +32,7 @@ void AswarmControllerAnimal::Tick(float DeltaTime)
 	arraySize = swarmArray.Num();
 
 }
-void AswarmControllerAnimal::StopToEat(float tick, AActor* food, AswarmActor* act)
-{
-	/*act->velocity = act->velocity + MoveTo(food->GetActorLocation(), act);
-	timer += tick;
-	if (timer >= 10)
-	{
-		act->behave = Behaviours::IDLE;
-	}*/
-}
+
 
 FVector AswarmControllerAnimal::RunFrom(ACharacter* AC,AswarmActor* act)
 {
@@ -167,7 +159,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 		FVector idleV = FVector().ZeroVector;
 		FVector totalV = FVector().ZeroVector;
 		FVector lineV = FVector::ZeroVector;
-		swarmArray[i]->behave = Behaviours::MOVETOTARGET;// StateManager(swarmArray[i], tick);
+		swarmArray[i]->behave =  StateManager(swarmArray[i], tick);
 		//lineV = Avoidance(swarmArray[i]);
 		for (int j = 0; j < swarmArray.Num(); j++)
 		{
@@ -242,7 +234,7 @@ void AswarmControllerAnimal::AnimalApply(float tick)
 			}
 		}
 		//scale the returned values
-		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_WorldDynamic));// swarmArray[i]->LineTracer();
+		lineV = Collision(ConeTracer(swarmArray[i], ECollisionChannel::ECC_Camera));// swarmArray[i]->LineTracer();
 		separationV = (separationV *scaleSep);
 		cohesionV = ((cohesionV/agents) *scaleCoh).GetClampedToSize(-20, 20);
 		alignmentV = ((alignmentV/agents) * scaleAli).GetClampedToSize(-200, 200);
