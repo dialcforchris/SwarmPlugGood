@@ -49,6 +49,10 @@ static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_Behaviours(Behaviours_St
 		FNativeFunctionRegistrar::RegisterFunction(ATheSwarmManagerAnimal::StaticClass(),"StateManager",(Native)&ATheSwarmManagerAnimal::execStateManager);
 	}
 	IMPLEMENT_CLASS(ATheSwarmManagerAnimal, 4289633646);
+	void ATheCustomManager::StaticRegisterNativesATheCustomManager()
+	{
+	}
+	IMPLEMENT_CLASS(ATheCustomManager, 2041194259);
 #if USE_COMPILED_IN_NATIVES
 // Cross Module References
 	COREUOBJECT_API class UClass* Z_Construct_UClass_UObject_NoRegister();
@@ -82,6 +86,8 @@ static FCompiledInDeferEnum Z_CompiledInDeferEnum_UEnum_Behaviours(Behaviours_St
 	THESWARM_API class UFunction* Z_Construct_UFunction_ATheSwarmManagerAnimal_StateManager();
 	THESWARM_API class UClass* Z_Construct_UClass_ATheSwarmManagerAnimal_NoRegister();
 	THESWARM_API class UClass* Z_Construct_UClass_ATheSwarmManagerAnimal();
+	THESWARM_API class UClass* Z_Construct_UClass_ATheCustomManager_NoRegister();
+	THESWARM_API class UClass* Z_Construct_UClass_ATheCustomManager();
 	THESWARM_API class UPackage* Z_Construct_UPackage_TheSwarm();
 	UEnum* Z_Construct_UEnum_TheSwarm_Behaviours()
 	{
@@ -761,6 +767,37 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 	}
 	static FCompiledInDefer Z_CompiledInDefer_UClass_ATheSwarmManagerAnimal(Z_Construct_UClass_ATheSwarmManagerAnimal, TEXT("ATheSwarmManagerAnimal"));
 	DEFINE_VTABLE_PTR_HELPER_CTOR(ATheSwarmManagerAnimal);
+	UClass* Z_Construct_UClass_ATheCustomManager_NoRegister()
+	{
+		return ATheCustomManager::StaticClass();
+	}
+	UClass* Z_Construct_UClass_ATheCustomManager()
+	{
+		static UClass* OuterClass = NULL;
+		if (!OuterClass)
+		{
+			Z_Construct_UClass_ATheSwarmManagerAnimal();
+			Z_Construct_UPackage_TheSwarm();
+			OuterClass = ATheCustomManager::StaticClass();
+			if (!(OuterClass->ClassFlags & CLASS_Constructed))
+			{
+				UObjectForceRegistration(OuterClass);
+				OuterClass->ClassFlags |= 0x20900080;
+
+
+				OuterClass->StaticLink();
+#if WITH_METADATA
+				UMetaData* MetaData = OuterClass->GetOutermost()->GetMetaData();
+				MetaData->SetValue(OuterClass, TEXT("IncludePath"), TEXT("TheCustomManager.h"));
+				MetaData->SetValue(OuterClass, TEXT("ModuleRelativePath"), TEXT("Classes/TheCustomManager.h"));
+#endif
+			}
+		}
+		check(OuterClass->GetClass());
+		return OuterClass;
+	}
+	static FCompiledInDefer Z_CompiledInDefer_UClass_ATheCustomManager(Z_Construct_UClass_ATheCustomManager, TEXT("ATheCustomManager"));
+	DEFINE_VTABLE_PTR_HELPER_CTOR(ATheCustomManager);
 	UPackage* Z_Construct_UPackage_TheSwarm()
 	{
 		static UPackage* ReturnPackage = NULL;
@@ -769,8 +806,8 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 			ReturnPackage = CastChecked<UPackage>(StaticFindObjectFast(UPackage::StaticClass(), NULL, FName(TEXT("/Script/TheSwarm")), false, false));
 			ReturnPackage->PackageFlags |= PKG_CompiledIn | 0x00000000;
 			FGuid Guid;
-			Guid.A = 0xC1FF3488;
-			Guid.B = 0x972A9D36;
+			Guid.A = 0x087F2CFE;
+			Guid.B = 0xC12FE4C8;
 			Guid.C = 0x00000000;
 			Guid.D = 0x00000000;
 			ReturnPackage->SetGuid(Guid);

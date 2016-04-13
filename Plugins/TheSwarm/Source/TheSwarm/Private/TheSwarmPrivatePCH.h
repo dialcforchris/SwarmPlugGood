@@ -8,3 +8,4 @@
 #include "TheSwarmActor.h"
 #include "TheSwarmManager.h"
 #include "TheSwarmManagerAnimal.h"
+#include "TheCustomManager.h"

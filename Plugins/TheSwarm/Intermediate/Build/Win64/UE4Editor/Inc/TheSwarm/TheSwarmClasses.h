@@ -10,4 +10,5 @@
 #include "Classes/TheSwarmActor.h"
 #include "Classes/TheSwarmManager.h"
 #include "Classes/TheSwarmManagerAnimal.h"
+#include "Classes/TheCustomManager.h"
 

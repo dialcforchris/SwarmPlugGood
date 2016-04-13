@@ -14,3 +14,6 @@
 #ifndef THESWARM_TheSwarmManagerAnimal_generated_h
 	#include "Classes/TheSwarmManagerAnimal.h"
 #endif
+#ifndef THESWARM_TheCustomManager_generated_h
+	#include "Classes/TheCustomManager.h"
+#endif
